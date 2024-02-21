@@ -35,3 +35,7 @@ Taking a tonne of pictures and videos will give me a sense of what to draw.
 ![Instructions for drawing an owl](owl.PNG)
 
 I've started testing what the GPS tracker gives me. The `.gpx` file in this repo is me walking around the block at work.
+
+![a folium map of the pitt/george st block with a red line showing the walking path I took.](bvn_block_map.PNG)
+
+This isn't perfect, e.g. I didn't cross the road on the right hand side, but I'm hoping that's down to map inaccuracy, not GPS drift. Hopefully, given that there's a good view of the sky from the ocean, and the data will all match up with itself.
