@@ -32,6 +32,6 @@ Taking a tonne of pictures and videos will give me a sense of what to draw.
 
 ### Draw the rest of the fucking owl
 
-![Instructions for drawing an owl](owl.png)
+![Instructions for drawing an owl](owl.PNG)
 
 I've started testing what the GPS tracker gives me. The `.gpx` file in this repo is me walking around the block at work.
