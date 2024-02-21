@@ -13,6 +13,11 @@ walking_path.plot()
 
 # %%
 def hack_the_coords_out(path):
+    """Pull a list of [y, x] pairs.
+
+    No idea if this is the easiest way to do this, I got a
+    lot of NotImplementedYet errors for .coords and .xy
+    """
     x = list(path.geometry[0].geoms[0].xy[0])
     y = list(path.geometry[0].geoms[0].xy[1])
     coords = list(zip(y, x))
