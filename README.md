@@ -48,12 +48,22 @@ Tali and I went for a swim around the chain on 9/3/24 and dragged the GPS float 
 
 ![Me, touching a marker on a barrel](docs/GOPR0211.JPG)
 
-I swam the float around, and touched my computer hand to the base of each numbered marker, and intermediary buoy, and while my hand was there, Tali took a photo. The timestamps from the EXIF data tell me when I was at a marker.
+I swam the float around, and touched my computer hand to the base of each numbered marker, and intermediary buoy, and while my hand was there, Tali took a photo. The timestamps from the EXIF data tell me when I was at a marker. (Also, I know my tank trim is horrible. I'm going to fix that.)
 
 We did two dives, one around the chain, and one following the sand line of the boulder garden.
 
 You can see how the data is processed in `mapper.py`, it gives an output like this:
 
-![]()
+![](docs/plain_graph.png)
+
+The red is the first (chain) dive, and the green is the second (boulder garden) dive. The blue sections are where the photos were taken.
+
+I overlaid the tracks onto a folium map, and then overlaid _that_ into the existing maps I've been collecting. The interesting thing is that the GPS trail is not only a different size, it's a substantially different shape.
 
 ![the overlaid maps from above, but with the GPS tracks as well](docs/gordons_with_gps_tracks.PNG)
+
+The first map was drawn in 1990 by Joelle Devis, and it's really good. Odd that it's so hard to find on the internet, and odder that it hasn't been updated. I found it because the inset map is republished on [Michael McFadyen's website](https://www.michaelmcfadyenscuba.info/viewpage.php?page_id=282). My guess is that this map is drawn by dead reckoning, using distances and headings. It's also possible that sections of the chain have moved over the last 34 years.
+
+![](docs/gordons_map_1990.png)
+
+There is going to be some degree of inaccuracy in the GPS track, and I need to calculate that once I get the depth data. I can assume that the float line is the edge of a cone, probably less than 80° at the point. So there will be more error possible at depth. I should be able to draw those circles.
