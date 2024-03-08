@@ -12,8 +12,6 @@ from shapely.geometry import LineString
 from photo_meta import photo_meta
 
 # %%
-
-# fp = "20240221-154533 - Around The block.gpx"
 fp = "20240308-090746 - Gordons.gpx"
 recorded_path = gp.read_file(fp, layer="tracks")
 recorded_path.head()
@@ -102,7 +100,6 @@ def hack_the_coords_out(path):
 
 # %%
 gordons_coords = [-33.91611178427029, 151.2636983190627]
-BVN_coords = -33.87223918078827, 151.20757513528568
 f_map = folium.Map(
     location=gordons_coords,
     # tiles="CartoDB Positron",
