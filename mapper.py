@@ -4,7 +4,8 @@ import folium
 
 # %%
 
-fp = "20240221-154533 - Around The block.gpx"
+# fp = "20240221-154533 - Around The block.gpx"
+fp = "20240308-090746 - Gordons.gpx"
 walking_path = gp.read_file(fp, layer="tracks")
 walking_path.head()
 # %%
@@ -23,7 +24,7 @@ def hack_the_coords_out(path):
 gordons_coords = [-33.91611178427029, 151.2636983190627]
 BVN_coords = -33.87223918078827, 151.20757513528568
 f_map = folium.Map(
-    location=BVN_coords,
+    location=gordons_coords,
     tiles="CartoDB Positron",
     zoom_start=18,
 )
