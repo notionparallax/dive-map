@@ -6,7 +6,7 @@ Oddly, there's no good map of Gordon's that I've found. There are a couple of ma
 
 <figure>
 
-![Several maps of Gordon's bay, overlaid on each other](gordons_early_stage.PNG)
+![Several maps of Gordon's bay, overlaid on each other](docs/gordons_early_stage.PNG)
 
 <figcaption>Several maps of Gordon's bay, overlaid on each other.</figcaption>
 
@@ -32,10 +32,28 @@ Taking a tonne of pictures and videos will give me a sense of what to draw.
 
 ### Draw the rest of the fucking owl
 
-![Instructions for drawing an owl](owl.PNG)
+![Instructions for drawing an owl](docs/owl.PNG)
+
+### GPS testing
 
 I've started testing what the GPS tracker gives me. The `.gpx` file in this repo is me walking around the block at work.
 
-![a folium map of the pitt/george st block with a red line showing the walking path I took.](bvn_block_map.PNG)
+![a folium map of the pitt/george st block with a red line showing the walking path I took.](docs/bvn_block_map.PNG)
 
 This isn't perfect, e.g. I didn't cross the road on the right hand side, but I'm hoping that's down to map inaccuracy, not GPS drift. Hopefully, given that there's a good view of the sky from the ocean, and the data will all match up with itself.
+
+### First GPS dive
+
+Tali and I went for a swim around the chain on 9/3/24 and dragged the GPS float (photos coming). I left the GPS running the whole morning and it was actually completely fine, no overheating or battery issues.
+
+![Me, touching a marker on a barrel](docs/GOPR0211.JPG)
+
+I swam the float around, and touched my computer hand to the base of each numbered marker, and intermediary buoy, and while my hand was there, Tali took a photo. The timestamps from the EXIF data tell me when I was at a marker.
+
+We did two dives, one around the chain, and one following the sand line of the boulder garden.
+
+You can see how the data is processed in `mapper.py`, it gives an output like this:
+
+![]()
+
+![the overlaid maps from above, but with the GPS tracks as well](docs/gordons_with_gps_tracks.PNG)

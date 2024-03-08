@@ -4,6 +4,7 @@ from datetime import timedelta
 import dateparser
 import folium
 import geopandas as gp
+import matplotlib.pyplot as plt
 import gpxpy
 import gpxpy.gpx
 from dateutil import tz
@@ -83,6 +84,8 @@ dives = gp.GeoDataFrame(dive_data)
 dives.head()
 # %%
 dives.plot(color=dives.colour)
+plt.tight_layout()
+plt.savefig("docs/plain_graph.png")
 
 
 # %%
