@@ -10,7 +10,7 @@ import gpxpy.gpx
 import matplotlib.pyplot as plt
 import pandas as pd
 from dateutil import tz
-from shapely.geometry import LineString
+from shapely.geometry import LineString, Point
 
 from photo_meta import photo_meta
 
@@ -34,6 +34,8 @@ depth_df.plot(
     ylabel="Depth (m)",
     xlabel="Time (UTC)",
 )
+# %%
+depth_df.head()
 
 # %%
 fp = "20240308-090746 - Gordons.gpx"
@@ -44,7 +46,9 @@ recorded_path.plot()
 
 # %% filter it down to just the dives, because this also has the bus trip back to the shop
 with open(fp, "r", encoding="utf-8") as gpx_file:
+    # gpx is a gpx object which contains lots of metadata as well
     gpx = gpxpy.parse(gpx_file)
+
 
 # %%
 end_time = dateparser.parse("2024-03-08T02:25:26Z")
@@ -56,13 +60,30 @@ dive_1_start_time = end_time - timedelta(minutes=250)
 
 dive_1_points = []
 dive_2_points = []
+dives_LLT = []
 for track in gpx.tracks:
     for segment in track.segments:
         for point in segment.points:
             if point.time < dive_1_end_time and point.time > dive_1_start_time:
                 dive_1_points.append([point.longitude, point.latitude])
+                dives_LLT.append(
+                    {
+                        "lon": point.longitude,
+                        "lat": point.latitude,
+                        "dt": point.time,
+                        "description": "chain_loop",
+                    }
+                )
             elif point.time < dive_2_end_time and point.time > dive_2_start_time:
                 dive_2_points.append([point.longitude, point.latitude])
+                dives_LLT.append(
+                    {
+                        "lon": point.longitude,
+                        "lat": point.latitude,
+                        "dt": point.time,
+                        "description": "boulder_garden",
+                    }
+                )
 
 dive_data = [
     {
@@ -156,4 +177,41 @@ folium.PolyLine(
 f_map
 
 # %%
+dives_df = pd.DataFrame(dives_LLT).set_index("dt")
 # %%
+dives_df["geometry"] = dives_df.apply(lambda row: Point(row.lon, row.lat), axis=1)
+dives_gdf = gp.GeoDataFrame(dives_df)
+dives_gdf.plot()
+# %%
+dives_df.head()
+# %%
+depth_df.head()
+# %%
+sydney_tz = tz.gettz("Australia/Sydney")
+for photo in photo_meta:
+    naive_dt = photo["dt"]
+    sydney_dt = naive_dt.replace(tzinfo=sydney_tz)
+    utc_dt = sydney_dt.astimezone(tz.tzutc())
+    photo["dt"] = utc_dt
+
+photo_df = pd.DataFrame(photo_meta).set_index("dt")
+photo_df.head()
+
+# %%
+# Convert all timestamps to UTC
+dives_df.index = dives_df.index.tz_convert("UTC")
+depth_df.index = depth_df.index.tz_convert("UTC")
+photo_df.index = photo_df.index.tz_convert("UTC")
+# %%
+print("dives_df:", repr(dives_df.iloc[0].name))
+print("depth_df:", repr(depth_df.iloc[0].name))
+print("photo_df:", repr(photo_df.iloc[0].name))
+# %%
+dives_df["source"] = "dives"
+depth_df["source"] = "depth"
+photo_df["source"] = "photo"
+# %%
+all_df = pd.concat([dives_df, depth_df, photo_df], sort=True)
+all_df.sample(10)
+# %%
+all_df.head(20)
