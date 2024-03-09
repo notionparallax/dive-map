@@ -83,7 +83,7 @@ dive_data = [
 # Create a timezone object for Sydney
 sydney_tz = tz.gettz("Australia/Sydney")
 for photo in photo_meta:
-    naive_dt = photo["datetime"]
+    naive_dt = photo["dt"]
     sydney_dt = naive_dt.replace(tzinfo=sydney_tz)
     utc_dt = sydney_dt.astimezone(tz.tzutc())
     seg_start = utc_dt - timedelta(seconds=5)
