@@ -4,13 +4,36 @@ from datetime import timedelta
 import dateparser
 import folium
 import geopandas as gp
+import pandas as pd
 import matplotlib.pyplot as plt
 import gpxpy
 import gpxpy.gpx
 from dateutil import tz
 from shapely.geometry import LineString
+import fitdecode
 
 from photo_meta import photo_meta
+
+# %% depth data
+depth_data = []
+with fitdecode.FitReader("ScubaDiving_2024-03-08T09_29_45.fit") as fit_file:
+    for frame in fit_file:
+        if isinstance(frame, fitdecode.records.FitDataMessage):
+            if frame.name == "record":
+                depth_data.append(
+                    {
+                        # frame.name,
+                        # [x.name for x in frame.fields],
+                        "dt": frame.get_value("timestamp"),
+                        "depth": -frame.get_value("depth"),
+                    }
+                )
+depth_df = pd.DataFrame(depth_data).set_index("dt")
+depth_df.plot(
+    title="Depth of dive 1 around the gordon's chain",
+    ylabel="Depth (m)",
+    xlabel="Time (UTC)",
+)
 
 # %%
 fp = "20240308-090746 - Gordons.gpx"
