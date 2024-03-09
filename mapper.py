@@ -2,15 +2,15 @@
 from datetime import timedelta
 
 import dateparser
+import fitdecode
 import folium
 import geopandas as gp
-import pandas as pd
-import matplotlib.pyplot as plt
 import gpxpy
 import gpxpy.gpx
+import matplotlib.pyplot as plt
+import pandas as pd
 from dateutil import tz
 from shapely.geometry import LineString
-import fitdecode
 
 from photo_meta import photo_meta
 
