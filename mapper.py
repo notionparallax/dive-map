@@ -12,7 +12,8 @@ import matplotlib as mpl
 import pandas as pd
 import pytz
 from dateutil import tz
-from shapely.geometry import LineString, Point
+from shapely.geometry import Point, MultiPoint
+from shapely import centroid
 
 from photo_meta import photo_meta
 
@@ -179,9 +180,17 @@ def make_marker_text(row):
 
 markers_df = all_gdf[(all_gdf.source == "photo") & (all_gdf.marker_type == "numbered")]
 markers_df["marker_text"] = markers_df.apply(make_marker_text, axis=1)
+uni_marker_df = markers_df.groupby("marker_number").apply(
+    lambda grp: pd.Series(
+        {
+            "geometry": centroid(MultiPoint(list(grp.geometry))),
+            "marker_text": grp.marker_text[0],
+        }
+    )
+)
 ax = all_gdf.plot(column="depth", cmap="rainbow", figsize=(15, 10), legend=True)
 plt.title("Gordon's bay trail, coloured by depth")
-markers_df.apply(
+uni_marker_df.apply(
     lambda row: ax.annotate(
         text=row.marker_text,
         xy=[row.geometry.x, row.geometry.y],
@@ -199,6 +208,7 @@ plt.tight_layout()
 plt.savefig("docs/marker_graph.png")
 print(all_gdf[all_gdf.source == "photo"].shape[0], "photos")
 
+# %%
 
 # %%
 gordons_coords = [-33.91611178427029, 151.2636983190627]
@@ -209,7 +219,7 @@ def depth_to_colour(depth):
     max_depth = all_gdf.depth.min()
     scaled_depth = depth / max_depth
 
-    cmap = mpl.colormaps["rainbow"]
+    cmap = mpl.colormaps["rainbow_r"]
     c = cmap(scaled_depth)
     return f"""rgb({c[0]*255} {c[1]*255} {c[2]*255})"""
 
