@@ -76,6 +76,10 @@ This shows the position of the photos and the depths along the trail.
 
 There's a [zoomable map that shows the path from the dives here](https://notionparallax.github.io/dive-map/gordons_map).
 
-[![](/docs/in)](https://notionparallax.github.io/dive-map/gordons_map)
+[![a bright line tracing the chain overlaid onto a satellite photo of Gordon's bay](/docs/interactive_thumbnail.PNG)](https://notionparallax.github.io/dive-map/gordons_map)
 
-I'll add the trail in eventually, but I don't have data for a few of the markers. I'm not sure if the camera just didn't go off, or the marker is buried in the sand, or what. I also need to add in the intermediate buoys because I don't think the runs are straight between the numbered markers.
+I don't have data for a few of the markers. I'm not sure if the camera just didn't go off, or the marker is buried in the sand, or what. I also need to add in the intermediate buoys because I don't think the runs are straight between the numbered markers.
+
+![](docs/marker_graph.png)
+
+This shows the numbered markers that I have waypoints for, but the missing points don't seem to be at the obvious corners. More will be revealed when I do another dive, and when I've put in the intermediate buoys.
