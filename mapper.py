@@ -14,23 +14,33 @@ from shapely.geometry import LineString, Point
 
 from photo_meta import photo_meta
 
+
 # %% depth data
-depth_data = []
-with fitdecode.FitReader("ScubaDiving_2024-03-08T09_29_45.fit") as fit_file:
-    for frame in fit_file:
-        if isinstance(frame, fitdecode.records.FitDataMessage):
-            if frame.name == "record":
-                depth_data.append(
-                    {
-                        # frame.name,
-                        # [x.name for x in frame.fields],
-                        "dt": frame.get_value("timestamp"),
-                        "depth": -frame.get_value("depth"),
-                    }
-                )
+def get_depth_data_from_fit_file(file_name="ScubaDiving_2024-03-08T09_29_45.fit"):
+    depth_data = []
+    with fitdecode.FitReader(file_name) as fit_file:
+        for frame in fit_file:
+            if isinstance(frame, fitdecode.records.FitDataMessage):
+                if frame.name == "record":
+                    depth_data.append(
+                        {
+                            "dt": frame.get_value("timestamp"),
+                            "depth": -frame.get_value("depth"),
+                        }
+                    )
+        return depth_data
+
+
+depth_data_1 = get_depth_data_from_fit_file(
+    file_name="ScubaDiving_2024-03-08T09_29_45.fit"
+)
+depth_data_2 = get_depth_data_from_fit_file(
+    file_name="ScubaDiving_2024-03-08T11_26_21.fit"
+)
+depth_data = depth_data_1 + depth_data_2
 depth_df = pd.DataFrame(depth_data).set_index("dt")
 depth_df.plot(
-    title="Depth of dive 1 around the gordon's chain",
+    title="Depth of the dives\n 1 around the gordon's chain, 2 around the boulder garden",
     ylabel="Depth (m)",
     xlabel="Time (UTC)",
 )
@@ -190,6 +200,14 @@ depth_df.head()
 sydney_tz = tz.gettz("Australia/Sydney")
 for photo in photo_meta:
     naive_dt = photo["dt"]
+    try:
+        if naive_dt.tzinfo == sydney_tz:
+            tz_set = True
+        else:
+            tz_set = False
+    except AttributeError:
+        tz_set = False
+
     sydney_dt = naive_dt.replace(tzinfo=sydney_tz)
     utc_dt = sydney_dt.astimezone(tz.tzutc())
     photo["dt"] = utc_dt
@@ -197,6 +215,10 @@ for photo in photo_meta:
 photo_df = pd.DataFrame(photo_meta).set_index("dt")
 photo_df.head()
 
+# %%
+print("dives_df:", repr(dives_df.iloc[0].name))
+print("depth_df:", repr(depth_df.iloc[0].name))
+print("photo_df:", repr(photo_df.iloc[0].name))
 # %%
 # Convert all timestamps to UTC
 dives_df.index = dives_df.index.tz_convert("UTC")
@@ -211,7 +233,70 @@ dives_df["source"] = "dives"
 depth_df["source"] = "depth"
 photo_df["source"] = "photo"
 # %%
-all_df = pd.concat([dives_df, depth_df, photo_df], sort=True)
-all_df.sample(10)
+dives_df.head()
 # %%
+depth_df.head()
+# %%
+photo_df.head()
+# %%
+reduced_dives = dives_df
+# reduced_dives = reduced_dives.iloc[::60]  # pick one frame a minute
+# reduced_dives = reduced_dives[
+#     reduced_dives.index > depth_df.index[0]
+# ]  # wait until there's depth data
+all_df = pd.concat([reduced_dives, depth_df, photo_df])
+all_df.sort_index(axis=0, inplace=True)
+temp_df = all_df.copy(deep=True)
+temp_df.index = temp_df.index.tz_localize(None)
+temp_df.to_csv("all_data.csv")
+all_df.head(10)
+# %%
+all_df["depth"].ffill(inplace=True)
+all_df["depth"].fillna(0, inplace=True)
+all_df["filename"].ffill(inplace=True, limit=10)
+all_df["geometry"].ffill(inplace=True)
+all_df["description"].ffill(inplace=True)
+all_df.drop(["lat", "lon"], axis=1, inplace=True, errors="ignore")
 all_df.head(20)
+# %%
+all_gdf = gp.GeoDataFrame(all_df)
+
+
+# %%
+def make_marker_text(row):
+    filename = row.filename
+    if row.marker_type == "numbered":
+        return f"""{row.marker_number if row.marker_number else "-"} ({filename})"""
+    else:
+        return ""
+
+
+markers_df = all_gdf[(all_gdf.source == "photo") & (all_gdf.marker_type == "numbered")]
+markers_df["marker_text"] = markers_df.apply(make_marker_text, axis=1)
+ax = all_gdf.plot(column="depth", cmap="rainbow", figsize=(10, 15))
+plt.title("Gordon's bay trail, coloured by depth")
+markers_df.apply(
+    lambda row: ax.annotate(
+        text=row.marker_text,
+        xy=[row.geometry.x, row.geometry.y],
+        xytext=[row.geometry.x + 0.0003, row.geometry.y],
+        xycoords="data",
+        size="small",
+        color="k",
+        ha="center",
+        va="center",
+        arrowprops=dict(arrowstyle="->", connectionstyle="arc3,rad=-0.05", color="k"),
+    ),
+    axis=1,
+)
+plt.tight_layout()
+plt.savefig("docs/marker_graph.png")
+print(all_gdf[all_gdf.source == "photo"].shape[0], "photos")
+
+# all_gdf[all_gdf.source=="dives"].plot(ax=ax)
+
+# all_gdf[all_gdf.source=="depth"].plot()
+
+# %%
+all_gdf[(all_gdf.source == "photo") & (all_gdf.marker_type == "numbered")]
+# %%
