@@ -240,3 +240,4 @@ for index, row in all_gdf.iterrows():
 
 f_map
 # %%
+f_map.save("docs/gordons_map.html")
