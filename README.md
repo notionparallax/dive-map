@@ -73,3 +73,9 @@ There is going to be some degree of inaccuracy in the GPS track, and I need to c
 ![a map showing coloured dots for depth along the GPS trail, and the position of the photos is labeled](docs/map_of_depth_and_photos.png)
 
 This shows the position of the photos and the depths along the trail.
+
+There's a [zoomable map that shows the path from the dives here](https://notionparallax.github.io/dive-map/gordons_map).
+
+[![](/docs/in)](https://notionparallax.github.io/dive-map/gordons_map)
+
+I'll add the trail in eventually, but I don't have data for a few of the markers. I'm not sure if the camera just didn't go off, or the marker is buried in the sand, or what. I also need to add in the intermediate buoys because I don't think the runs are straight between the numbered markers.
