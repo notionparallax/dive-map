@@ -67,3 +67,9 @@ The first map was drawn in 1990 by Joelle Devis, and it's really good. Odd that 
 ![a hand drawn map of the chain trail with a zoomed out context map as well](docs/gordons_map_1990.png)
 
 There is going to be some degree of inaccuracy in the GPS track, and I need to calculate that once I get the depth data. I can assume that the float line is the edge of a cone, probably less than 80° at the point. So there will be more error possible at depth. I should be able to draw those circles.
+
+#### Some more progress (10/3/24)
+
+![a map showing coloured dots for depth along the GPS trail, and the position of the photos is labeled](docs/map_of_depth_and_photos.png)
+
+This shows the position of the photos and the depths along the trail.
