@@ -155,7 +155,7 @@ all_df = pd.concat([reduced_dives, depth_df, photo_df])
 all_df.sort_index(axis=0, inplace=True)
 temp_df = all_df.copy(deep=True)
 temp_df.index = temp_df.index.tz_localize(None)
-temp_df.to_csv("all_data.csv")
+# temp_df.to_csv("all_data.csv")
 all_df.head(10)
 # %%
 all_df["depth"].ffill(inplace=True)
