@@ -233,7 +233,16 @@ f_map = folium.Map(
     name="Esri Satellite",
     zoom_start=17,
 )
-for index, row in all_gdf.iterrows():
+chain_loop = folium.FeatureGroup(name="chain trail, depth and gps", show=True).add_to(
+    f_map
+)
+boulder_garden = folium.FeatureGroup(
+    name="boulder garden, depth and gps", show=False
+).add_to(f_map)
+markers = folium.FeatureGroup(name="markers", show=True).add_to(f_map)
+trail = folium.FeatureGroup(name="the trail", show=True).add_to(f_map)
+
+for index, row in all_gdf[all_gdf.description == "chain_loop"].iterrows():
     folium.CircleMarker(
         location=[row.geometry.y, row.geometry.x],
         radius=2,
@@ -246,8 +255,46 @@ for index, row in all_gdf.iterrows():
         tooltip=row.name.astimezone(pytz.timezone("Australia/Sydney")).strftime(
             "%H:%M:%S"
         ),
-    ).add_to(f_map)
+    ).add_to(chain_loop)
+for index, row in all_gdf[all_gdf.description == "boulder_garden"].iterrows():
+    folium.CircleMarker(
+        location=[row.geometry.y, row.geometry.x],
+        radius=2,
+        color=depth_to_colour(row.depth),
+        stroke=False,
+        fill=True,
+        weight=3,
+        fill_opacity=0.6,
+        opacity=1,
+        tooltip=row.name.astimezone(pytz.timezone("Australia/Sydney")).strftime(
+            "%H:%M:%S"
+        ),
+    ).add_to(boulder_garden)
+
+folium.PolyLine(
+    locations=[[p.y, p.x] for p in uni_marker_df.geometry],
+    color="white",
+    weight=2,
+    tooltip="The trail, as it stands now",
+).add_to(trail)
+
+for index, row in uni_marker_df.iterrows():
+    folium.CircleMarker(
+        location=[row.geometry.y, row.geometry.x],
+        radius=5,
+        color="white",
+        stroke=True,
+        fill=True,
+        weight=1,
+        fill_opacity=0.1,
+        opacity=1,
+        tooltip=row.marker_text,
+    ).add_to(markers)
+
+
+folium.LayerControl().add_to(f_map)
 
 f_map
 # %%
 f_map.save("docs/gordons_map.html")
+# %%
