@@ -32,6 +32,13 @@ for f in os.listdir("dive_photos"):
     img = Image.open(f"dive_photos/{f}")
     img_exif = img.getexif()
     dt = datetime.strptime(img_exif[306], "%Y:%m:%d %H:%M:%S")
-    photos.append({"filename": f, "datetime": dt})
+    photos.append(
+        {
+            "filename": f,
+            "datetime": dt,
+            "marker_type": "",
+            "marker_number": "",
+        }
+    )
 photos
 # %%
