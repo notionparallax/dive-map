@@ -8,7 +8,9 @@ import geopandas as gp
 import gpxpy
 import gpxpy.gpx
 import matplotlib.pyplot as plt
+import matplotlib as mpl
 import pandas as pd
+import pytz
 from dateutil import tz
 from shapely.geometry import LineString, Point
 
@@ -31,189 +33,98 @@ def get_depth_data_from_fit_file(file_name="ScubaDiving_2024-03-08T09_29_45.fit"
         return depth_data
 
 
-depth_data_1 = get_depth_data_from_fit_file(
-    file_name="ScubaDiving_2024-03-08T09_29_45.fit"
-)
-depth_data_2 = get_depth_data_from_fit_file(
-    file_name="ScubaDiving_2024-03-08T11_26_21.fit"
-)
-depth_data = depth_data_1 + depth_data_2
-depth_df = pd.DataFrame(depth_data).set_index("dt")
+def make_depth_df():
+    depth_data_1 = get_depth_data_from_fit_file(
+        file_name="ScubaDiving_2024-03-08T09_29_45.fit"
+    )
+    depth_data_2 = get_depth_data_from_fit_file(
+        file_name="ScubaDiving_2024-03-08T11_26_21.fit"
+    )
+    depth_data = depth_data_1 + depth_data_2
+    depth_df = pd.DataFrame(depth_data).set_index("dt")
+    return depth_df
+
+
+depth_df = make_depth_df()
 depth_df.plot(
     title="Depth of the dives\n 1 around the gordon's chain, 2 around the boulder garden",
     ylabel="Depth (m)",
     xlabel="Time (UTC)",
 )
-# %%
-depth_df.head()
 
 # %%
 fp = "20240308-090746 - Gordons.gpx"
 recorded_path = gp.read_file(fp, layer="tracks")
-recorded_path.head()
-# %%
 recorded_path.plot()
 
-# %% filter it down to just the dives, because this also has the bus trip back to the shop
-with open(fp, "r", encoding="utf-8") as gpx_file:
-    # gpx is a gpx object which contains lots of metadata as well
-    gpx = gpxpy.parse(gpx_file)
-
 
 # %%
-end_time = dateparser.parse("2024-03-08T02:25:26Z")
-dive_2_end_time = end_time - timedelta(minutes=70)
-dive_2_start_time = end_time - timedelta(minutes=120)
-dive_1_end_time = end_time - timedelta(minutes=180)
-dive_1_start_time = end_time - timedelta(minutes=250)
+def get_gps_data():
+    with open(fp, "r", encoding="utf-8") as gpx_file:
+        # gpx is a gpx object which contains lots of metadata as well
+        gpx = gpxpy.parse(gpx_file)
 
+    # filter it down to just the dives, because this also has the bus trip back to the shop
+    end_time = dateparser.parse("2024-03-08T02:25:26Z")
+    dive_2_end_time = end_time - timedelta(minutes=70)
+    dive_2_start_time = end_time - timedelta(minutes=120)
+    dive_1_end_time = end_time - timedelta(minutes=180)
+    dive_1_start_time = end_time - timedelta(minutes=250)
 
-dive_1_points = []
-dive_2_points = []
-dives_LLT = []
-for track in gpx.tracks:
-    for segment in track.segments:
-        for point in segment.points:
-            if point.time < dive_1_end_time and point.time > dive_1_start_time:
-                dive_1_points.append([point.longitude, point.latitude])
-                dives_LLT.append(
-                    {
-                        "lon": point.longitude,
-                        "lat": point.latitude,
-                        "dt": point.time,
-                        "description": "chain_loop",
-                    }
-                )
-            elif point.time < dive_2_end_time and point.time > dive_2_start_time:
-                dive_2_points.append([point.longitude, point.latitude])
-                dives_LLT.append(
-                    {
-                        "lon": point.longitude,
-                        "lat": point.latitude,
-                        "dt": point.time,
-                        "description": "boulder_garden",
-                    }
-                )
-
-dive_data = [
-    {
-        "label": "dive_1",
-        "geometry": LineString(dive_1_points),
-        "colour": "red",
-        "len": len(dive_1_points),
-    },
-    {
-        "label": "dive_2",
-        "geometry": LineString(dive_2_points),
-        "colour": "green",
-        "len": len(dive_2_points),
-    },
-]
-
-# TODO: this is a filthy O(N²) loop, is there a more efficient way to do this?
-# Create a timezone object for Sydney
-sydney_tz = tz.gettz("Australia/Sydney")
-for photo in photo_meta:
-    naive_dt = photo["dt"]
-    sydney_dt = naive_dt.replace(tzinfo=sydney_tz)
-    utc_dt = sydney_dt.astimezone(tz.tzutc())
-    seg_start = utc_dt - timedelta(seconds=5)
-    seg_end = utc_dt + timedelta(seconds=5)
-    seg_points = []
+    dives_LLT = []
     for track in gpx.tracks:
         for segment in track.segments:
             for point in segment.points:
-                if point.time < seg_end and point.time > seg_start:
-                    seg_points.append([point.longitude, point.latitude])
-    dive_data.append(
-        {
-            "label": photo["filename"].replace(".JPG", ""),
-            "geometry": LineString(seg_points),
-            "colour": "blue",
-            "len": len(seg_points),
-        },
-    )
+                if point.time < dive_1_end_time and point.time > dive_1_start_time:
+                    dives_LLT.append(
+                        {
+                            "lon": point.longitude,
+                            "lat": point.latitude,
+                            "dt": point.time,
+                            "description": "chain_loop",
+                        }
+                    )
+                elif point.time < dive_2_end_time and point.time > dive_2_start_time:
+                    dives_LLT.append(
+                        {
+                            "lon": point.longitude,
+                            "lat": point.latitude,
+                            "dt": point.time,
+                            "description": "boulder_garden",
+                        }
+                    )
 
-dives = gp.GeoDataFrame(dive_data)
-dives.head()
-# %%
-dives.plot(color=dives.colour)
-plt.tight_layout()
-plt.savefig("docs/plain_graph.png")
-
-
-# %%
-def hack_the_coords_out(path):
-    """Pull a list of [y, x] pairs.
-
-    No idea if this is the easiest way to do this, I got a
-    lot of NotImplementedYet errors for .coords and .xy
-    """
-    x = list(path.geometry[0].geoms[0].xy[0])
-    y = list(path.geometry[0].geoms[0].xy[1])
-    coords = list(zip(y, x))
-    return coords
+    return dives_LLT
 
 
-# %%
-gordons_coords = [-33.91611178427029, 151.2636983190627]
-f_map = folium.Map(
-    location=gordons_coords,
-    # tiles="CartoDB Positron",
-    tiles="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
-    attr="Esri",
-    name="Esri Satellite",
-    zoom_start=17,
-)
-# folium.PolyLine(
-#     locations=hack_the_coords_out(recorded_path),
-#     color="#FF0000",
-#     weight=5,
-#     tooltip="Walking around my office block",
-# ).add_to(f_map)
+def make_dive_df(get_gps_data):
+    dives_LLT = get_gps_data()
+    dives_df = pd.DataFrame(dives_LLT).set_index("dt")
+    dives_df["geometry"] = dives_df.apply(lambda row: Point(row.lon, row.lat), axis=1)
+    dives_gdf = gp.GeoDataFrame(dives_df)
+    return dives_df, dives_gdf
 
-folium.PolyLine(
-    locations=zip(dives.iloc[0].geometry.xy[1], dives.iloc[0].geometry.xy[0]),
-    color="red",
-    weight=5,
-    tooltip="dive 1, following the chain",
-).add_to(f_map)
-folium.PolyLine(
-    locations=zip(dives.iloc[1].geometry.xy[1], dives.iloc[1].geometry.xy[0]),
-    color="green",
-    weight=5,
-    tooltip="dive 2, outlining the rock garden",
-).add_to(f_map)
-f_map
 
-# %%
-dives_df = pd.DataFrame(dives_LLT).set_index("dt")
-# %%
-dives_df["geometry"] = dives_df.apply(lambda row: Point(row.lon, row.lat), axis=1)
-dives_gdf = gp.GeoDataFrame(dives_df)
+# TODO: get rid of one of these two
+dives_df, dives_gdf = make_dive_df(get_gps_data)
 dives_gdf.plot()
-# %%
-dives_df.head()
-# %%
-depth_df.head()
-# %%
-sydney_tz = tz.gettz("Australia/Sydney")
-for photo in photo_meta:
-    naive_dt = photo["dt"]
-    try:
-        if naive_dt.tzinfo == sydney_tz:
-            tz_set = True
-        else:
-            tz_set = False
-    except AttributeError:
-        tz_set = False
 
-    sydney_dt = naive_dt.replace(tzinfo=sydney_tz)
-    utc_dt = sydney_dt.astimezone(tz.tzutc())
-    photo["dt"] = utc_dt
 
-photo_df = pd.DataFrame(photo_meta).set_index("dt")
-photo_df.head()
+# %%
+def get_photo_data():
+    sydney_tz = tz.gettz("Australia/Sydney")
+    for photo in photo_meta:
+        naive_dt = photo["dt"]
+        sydney_dt = naive_dt.replace(tzinfo=sydney_tz)
+        utc_dt = sydney_dt.astimezone(tz.tzutc())
+        photo["dt"] = utc_dt
+
+    photo_df = pd.DataFrame(photo_meta).set_index("dt")
+    return photo_df
+
+
+photo_df = get_photo_data()
+
 
 # %%
 print("dives_df:", repr(dives_df.iloc[0].name))
@@ -232,12 +143,7 @@ print("photo_df:", repr(photo_df.iloc[0].name))
 dives_df["source"] = "dives"
 depth_df["source"] = "depth"
 photo_df["source"] = "photo"
-# %%
-dives_df.head()
-# %%
-depth_df.head()
-# %%
-photo_df.head()
+
 # %%
 reduced_dives = dives_df
 # reduced_dives = reduced_dives.iloc[::60]  # pick one frame a minute
@@ -273,7 +179,7 @@ def make_marker_text(row):
 
 markers_df = all_gdf[(all_gdf.source == "photo") & (all_gdf.marker_type == "numbered")]
 markers_df["marker_text"] = markers_df.apply(make_marker_text, axis=1)
-ax = all_gdf.plot(column="depth", cmap="rainbow", figsize=(10, 15))
+ax = all_gdf.plot(column="depth", cmap="rainbow", figsize=(15, 10), legend=True)
 plt.title("Gordon's bay trail, coloured by depth")
 markers_df.apply(
     lambda row: ax.annotate(
@@ -293,10 +199,44 @@ plt.tight_layout()
 plt.savefig("docs/marker_graph.png")
 print(all_gdf[all_gdf.source == "photo"].shape[0], "photos")
 
-# all_gdf[all_gdf.source=="dives"].plot(ax=ax)
-
-# all_gdf[all_gdf.source=="depth"].plot()
 
 # %%
-all_gdf[(all_gdf.source == "photo") & (all_gdf.marker_type == "numbered")]
+gordons_coords = [-33.91611178427029, 151.2636983190627]
+
+
+def depth_to_colour(depth):
+    min_depth = 0
+    max_depth = all_gdf.depth.min()
+    scaled_depth = depth / max_depth
+
+    cmap = mpl.colormaps["rainbow"]
+    c = cmap(scaled_depth)
+    return f"""rgb({c[0]*255} {c[1]*255} {c[2]*255})"""
+
+
+# %%
+f_map = folium.Map(
+    location=gordons_coords,
+    # tiles="CartoDB Positron",
+    tiles="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
+    attr="Esri",
+    name="Esri Satellite",
+    zoom_start=17,
+)
+for index, row in all_gdf.iterrows():
+    folium.CircleMarker(
+        location=[row.geometry.y, row.geometry.x],
+        radius=2,
+        color=depth_to_colour(row.depth),
+        stroke=False,
+        fill=True,
+        weight=3,
+        fill_opacity=0.6,
+        opacity=1,
+        tooltip=row.name.astimezone(pytz.timezone("Australia/Sydney")).strftime(
+            "%H:%M:%S"
+        ),
+    ).add_to(f_map)
+
+f_map
 # %%
