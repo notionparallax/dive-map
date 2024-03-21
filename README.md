@@ -42,6 +42,17 @@ I've started testing what the GPS tracker gives me. The `.gpx` file in this repo
 
 This isn't perfect, e.g. I didn't cross the road on the right hand side, but I'm hoping that's down to map inaccuracy, not GPS drift. Hopefully, given that there's a good view of the sky from the ocean, and the data will all match up with itself.
 
+The stack for this is:
+
+1. A [GPS Logger](https://play.google.com/store/apps/details?id=eu.basicairdata.graziano.gpslogger&hl=en&gl=US) app. This one works well, exports easily to google drive, and doesn't chew through my battery.
+2. A [Sunnto D5](https://www.suunto.com/en-au/Products/dive-computers-and-instruments/suunto-d5/suunto-d5-white/) computer. Works fine, exports to a `.fit` file from the phone.
+3. A [GoPro 12](https://gopro.com/en/au/shop/cameras/hero12-black/CHDHX-121-master.html). These photos are useful because it means I don't need to get the wet notes out, I can just take photos and then see where the photos are on the GPS track. The 12 doesn't actually have GPS, but that doesn't really matter because it doesn't work underwater anyway. You could use any camera at all, we're just interested in the EXIF data.
+4. A bit of python in a GitHub Codespace. I can't install packages on my work computer, but I can do everything I need to in a remote machine, for free.
+
+Something that's interesting is that I didn't need to install anything on my laptop, or run any code locally*, I was able to export all the data using my phone and Google Drive.
+
+* That's not quite true, I did need to [extract the EXIF] data, but that only used libraries that are in the standard work image.
+
 ### First GPS dive
 
 Tali and I went for a swim around the chain on 9/3/24 and dragged the GPS float (photos of that coming). I left the GPS running the whole morning and it was actually completely fine, no overheating or battery issues.
@@ -76,6 +87,10 @@ This shows the position of the photos and the depths along the trail.
 
 There's a [zoomable map that shows the path from the dives here](https://notionparallax.github.io/dive-map/gordons_map).
 
-[![](/docs/in)](https://notionparallax.github.io/dive-map/gordons_map)
+[![a bright line tracing the chain overlaid onto a satellite photo of Gordon's bay](/docs/interactive_thumbnail.PNG)](https://notionparallax.github.io/dive-map/gordons_map)
 
-I'll add the trail in eventually, but I don't have data for a few of the markers. I'm not sure if the camera just didn't go off, or the marker is buried in the sand, or what. I also need to add in the intermediate buoys because I don't think the runs are straight between the numbered markers.
+I don't have data for a few of the markers. I'm not sure if the camera just didn't go off, or the marker is buried in the sand, or what. I also need to add in the intermediate buoys because I don't think the runs are straight between the numbered markers.
+
+![](docs/marker_graph.png)
+
+This shows the numbered markers that I have waypoints for, but the missing points don't seem to be at the obvious corners. More will be revealed when I do another dive, and when I've put in the intermediate buoys.

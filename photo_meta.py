@@ -108,7 +108,7 @@ photo_meta = [
         "dt": datetime.datetime(2024, 3, 8, 9, 40, 23),
         "filename": "GOPR0115.JPG",
         "marker_type": "numbered",
-        "marker_number": "6",
+        "marker_number": 6,
     },
     {
         "dt": datetime.datetime(2024, 3, 8, 9, 43, 35),
@@ -558,7 +558,7 @@ photo_meta = [
         "dt": datetime.datetime(2024, 3, 8, 10, 5, 32),
         "filename": "GOPR0190.JPG",
         "marker_type": "numbered",
-        "marker_number": "16",
+        "marker_number": 16,
     },
     {
         "dt": datetime.datetime(2024, 3, 8, 10, 5, 55),
