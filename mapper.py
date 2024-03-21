@@ -191,43 +191,84 @@ uni_marker_df = markers_df.groupby("marker_number").apply(
         {
             "geometry": centroid(MultiPoint(list(grp.geometry))),
             "marker_text": grp.marker_text[0],
+            "depth": grp.depth.mean(),
         }
     )
 )
-# %%
 
-ax = all_gdf.plot(column="depth", cmap="rainbow", figsize=(15, 10), legend=True)
-intermediate_df.plot(ax=ax, marker="2")
-uni_marker_df.plot(ax=ax, marker="$\circ$")
-plt.title("Gordon's bay trail, coloured by depth")
-uni_marker_df.apply(
-    lambda row: ax.annotate(
+
+# %%
+def add_numbered_marker_label(row):
+    """Add a numbered marker to the map for the major points on the trail."""
+    ax.annotate(
         text=row.marker_text,
         xy=[row.geometry.x, row.geometry.y],
-        xytext=[row.geometry.x + 0.0002, row.geometry.y],
+        xytext=[row.geometry.x + X_OFFSET, row.geometry.y],
         xycoords="data",
         size="small",
         color="k",
         ha="center",
         va="center",
         arrowprops=dict(arrowstyle="->", connectionstyle="arc3,rad=-0.05", color="k"),
-    ),
-    axis=1,
-)
-intermediate_df.apply(
-    lambda row: ax.annotate(
-        text=row.filename.replace(".JPG", ""),
+    )
+
+
+def add_tolerance_circle(row):
+    """Add a circle to each numbered marker to indicate how much uncertainty there is for a given worst case angle."""
+    worst_case_cord_angle = 35
+    ax.add_patch(
+        plt.Circle(
+            (row.geometry.x, row.geometry.y),
+            (90 / 10_000000)
+            * (math.tan(math.radians(worst_case_cord_angle)) * abs(row.depth)),
+            color="r",
+            fill=False,
+            alpha=0.4,
+            linestyle="-.",
+        )
+    )
+
+
+def add_intermediate_label(row):
+    """Add filename marker to the map for the minor points on the trail."""
+
+    ax.annotate(
+        text=row.filename.replace(".JPG", "").replace("GOPR", ""),
         xy=[row.geometry.x, row.geometry.y],
-        xytext=[row.geometry.x - 0.00015, row.geometry.y - 0.00003],
+        xytext=[row.geometry.x - X_OFFSET_SMALL, row.geometry.y - Y_OFFSET],
         xycoords="data",
         size=6,
         color="k",
         ha="left",
         va="center",
         arrowprops=dict(arrowstyle="->", connectionstyle="arc3,rad=-0.05", color="k"),
-    ),
-    axis=1,
+        alpha=0.6,
+    )
+
+
+X_OFFSET = 0.0002
+X_OFFSET_SMALL = 0.00015
+Y_OFFSET = 0.00003
+fig, ax = plt.subplots(figsize=(10, 7))
+cax = all_gdf.plot(column="depth", cmap="rainbow", ax=ax)
+divider = make_axes_locatable(ax)
+cax_cb = divider.append_axes("right", size="2%", pad=0.05)
+cbar = plt.colorbar(cax.collections[0], cax=cax_cb)
+cbar.set_label("Depth")
+
+intermediate_df.plot(ax=ax, marker="2")
+uni_marker_df.plot(ax=ax, marker="$\circ$")
+ax.add_patch(plt.Circle((0, 0), 0.2, color="r"))
+uni_marker_df.apply(add_numbered_marker_label, axis=1)
+uni_marker_df.apply(add_tolerance_circle, axis=1)
+intermediate_df.apply(add_intermediate_label, axis=1)
+
+tol_circle = plt.Circle(
+    [], [], color="r", fill=False, alpha=0.4, linestyle="-.", label="Tolerance area"
 )
+ax.legend(handles=[tol_circle])
+
+ax.set_title("Gordon's bay trail, coloured by depth")
 plt.tight_layout()
 plt.savefig("docs/marker_graph.png")
 print(all_gdf[all_gdf.source == "photo"].shape[0], "photos")
