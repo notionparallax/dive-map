@@ -164,14 +164,14 @@ all_df["filename"].ffill(inplace=True, limit=10)
 all_df["geometry"].ffill(inplace=True)
 all_df["description"].ffill(inplace=True)
 all_df.drop(["lat", "lon"], axis=1, inplace=True, errors="ignore")
-all_df.head(20)
+all_df.head()
 # %%
 all_gdf = gp.GeoDataFrame(all_df)
 
 
 # %%
 def make_marker_text(row):
-    filename = row.filename
+    filename = row.filename.replace(".JPG", "")
     if row.marker_type == "numbered":
         return f"""{row.marker_number if row.marker_number else "-"} ({filename})"""
     else:
@@ -179,7 +179,11 @@ def make_marker_text(row):
 
 
 markers_df = all_gdf[(all_gdf.source == "photo") & (all_gdf.marker_type == "numbered")]
+intermediate_df = all_gdf[
+    (all_gdf.source == "photo") & (all_gdf.marker_type == "intermediate")
+]
 markers_df["marker_text"] = markers_df.apply(make_marker_text, axis=1)
+# %%
 uni_marker_df = markers_df.groupby("marker_number").apply(
     lambda grp: pd.Series(
         {
@@ -188,17 +192,35 @@ uni_marker_df = markers_df.groupby("marker_number").apply(
         }
     )
 )
+# %%
+
 ax = all_gdf.plot(column="depth", cmap="rainbow", figsize=(15, 10), legend=True)
+intermediate_df.plot(ax=ax, marker="2")
+uni_marker_df.plot(ax=ax, marker="$\circ$")
 plt.title("Gordon's bay trail, coloured by depth")
 uni_marker_df.apply(
     lambda row: ax.annotate(
         text=row.marker_text,
         xy=[row.geometry.x, row.geometry.y],
-        xytext=[row.geometry.x + 0.0003, row.geometry.y],
+        xytext=[row.geometry.x + 0.0002, row.geometry.y],
         xycoords="data",
         size="small",
         color="k",
         ha="center",
+        va="center",
+        arrowprops=dict(arrowstyle="->", connectionstyle="arc3,rad=-0.05", color="k"),
+    ),
+    axis=1,
+)
+intermediate_df.apply(
+    lambda row: ax.annotate(
+        text=row.filename.replace(".JPG", ""),
+        xy=[row.geometry.x, row.geometry.y],
+        xytext=[row.geometry.x - 0.00015, row.geometry.y - 0.00003],
+        xycoords="data",
+        size=6,
+        color="k",
+        ha="left",
         va="center",
         arrowprops=dict(arrowstyle="->", connectionstyle="arc3,rad=-0.05", color="k"),
     ),

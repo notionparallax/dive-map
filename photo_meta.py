@@ -23,7 +23,7 @@ photo_meta = [
     {
         "dt": datetime.datetime(2024, 3, 8, 9, 34, 48),
         "filename": "GOPR0101.JPG",
-        "marker_type": "intermediate",
+        "marker_type": "",
         "marker_number": "",
     },
     {
@@ -41,7 +41,7 @@ photo_meta = [
     {
         "dt": datetime.datetime(2024, 3, 8, 9, 35, 19),
         "filename": "GOPR0104.JPG",
-        "marker_type": "intermediate",
+        "marker_type": "",
         "marker_number": "",
     },
     {
@@ -305,8 +305,8 @@ photo_meta = [
     {
         "dt": datetime.datetime(2024, 3, 8, 9, 51, 38),
         "filename": "GOPR0148.JPG",
-        "marker_type": "intermediate",
-        "marker_number": "",
+        "marker_type": "numbered",
+        "marker_number": 9,
     },
     {
         "dt": datetime.datetime(2024, 3, 8, 9, 51, 49),
@@ -377,7 +377,7 @@ photo_meta = [
     {
         "dt": datetime.datetime(2024, 3, 8, 9, 56, 2),
         "filename": "GOPR0160.JPG",
-        "marker_type": "intermediate",
+        "marker_type": "",
         "marker_number": "",
     },
     {
@@ -521,7 +521,7 @@ photo_meta = [
     {
         "dt": datetime.datetime(2024, 3, 8, 10, 3, 45),
         "filename": "GOPR0184.JPG",
-        "marker_type": "intermediate",
+        "marker_type": "",
         "marker_number": "",
     },
     {
