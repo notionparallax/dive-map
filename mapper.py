@@ -1,4 +1,5 @@
 # %%
+import math
 from datetime import timedelta
 
 import dateparser
@@ -7,13 +8,14 @@ import folium
 import geopandas as gp
 import gpxpy
 import gpxpy.gpx
-import matplotlib.pyplot as plt
 import matplotlib as mpl
+import matplotlib.pyplot as plt
 import pandas as pd
 import pytz
 from dateutil import tz
-from shapely.geometry import Point, MultiPoint
+from mpl_toolkits.axes_grid1 import make_axes_locatable
 from shapely import centroid
+from shapely.geometry import MultiPoint, Point
 
 from photo_meta import photo_meta
 
