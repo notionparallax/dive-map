@@ -9,13 +9,16 @@ import geopandas as gp
 import gpxpy
 import gpxpy.gpx
 import matplotlib as mpl
+import matplotlib.patches as mpatches
 import matplotlib.pyplot as plt
 import pandas as pd
 import pytz
 from dateutil import tz
+from geopandas import overlay
 from mpl_toolkits.axes_grid1 import make_axes_locatable
-from shapely import centroid
-from shapely.geometry import MultiPoint, Point
+from shapely import centroid, offset_curve
+from shapely.geometry import MultiPoint, Point, Polygon
+from shapely.ops import voronoi_diagram
 
 from photo_meta import photo_meta
 
@@ -246,34 +249,82 @@ def add_intermediate_label(row):
     )
 
 
+# %%
 X_OFFSET = 0.0002
 X_OFFSET_SMALL = 0.00015
 Y_OFFSET = 0.00003
 fig, ax = plt.subplots(figsize=(10, 7))
+
+# Plot the voronoi of bottom conditions
+points = MultiPoint(list(intermediate_df.geometry))
+regions = voronoi_diagram(points)
+r = gp.GeoDataFrame(
+    {
+        "geometry": list(regions.geoms),
+        "points": intermediate_df.geometry,
+        "bottom_condition": intermediate_df.bottom_condition,
+    }
+)
+colors = {"rocky": "gray", "sandy": "khaki", "kelp": "seagreen", "unspecified": "white"}
+legend_handles = []
+for condition, color in colors.items():
+    patch = mpatches.Patch(color=color, label=condition)
+    legend_handles.append(patch)
+
+buffer_radius = 0.0005  # Set this to your desired radius
+buffers = Polygon(r.points.convex_hull).buffer(buffer_radius)
+buffer_gdf = gp.GeoDataFrame(geometry=[buffers])
+clipped_gdf = overlay(r, buffer_gdf, how="intersection")
+clipped_gdf["color"] = clipped_gdf["bottom_condition"].map(colors)
+clipped_gdf.plot(
+    ax=ax, edgecolor=None, column="bottom_condition", color=clipped_gdf["color"]
+)
+# end voronoi
+
+# plot the swum paths and add a colourbar
 cax = all_gdf.plot(column="depth", cmap="rainbow", ax=ax)
 divider = make_axes_locatable(ax)
 cax_cb = divider.append_axes("right", size="2%", pad=0.05)
 cbar = plt.colorbar(cax.collections[0], cax=cax_cb)
 cbar.set_label("Depth")
 
+# add the markers
 intermediate_df.plot(ax=ax, marker="2")
 uni_marker_df.plot(ax=ax, marker="$\circ$")
-ax.add_patch(plt.Circle((0, 0), 0.2, color="r"))
 uni_marker_df.apply(add_numbered_marker_label, axis=1)
 uni_marker_df.apply(add_tolerance_circle, axis=1)
 intermediate_df.apply(add_intermediate_label, axis=1)
 
+
 tol_circle = plt.Circle(
     [], [], color="r", fill=False, alpha=0.4, linestyle="-.", label="Tolerance area"
 )
-ax.legend(handles=[tol_circle])
-
+legend_handles.append(tol_circle)
+ax.legend(handles=legend_handles)
 ax.set_title("Gordon's bay trail, coloured by depth")
 plt.tight_layout()
 plt.savefig("docs/marker_graph.png")
 print(all_gdf[all_gdf.source == "photo"].shape[0], "photos")
 
+
 # %%
+# Your existing code
+points = MultiPoint(list(intermediate_df.geometry))
+regions = voronoi_diagram(points)
+r = gp.GeoDataFrame(
+    {
+        "geometry": list(regions.geoms),
+        "points": intermediate_df.geometry,
+        "bottom_condition": intermediate_df.bottom_condition,
+    }
+)
+
+buffer_radius = 0.0005  # Set this to your desired radius
+buffers = Polygon(r.points.convex_hull).buffer(buffer_radius)
+buffer_gdf = gp.GeoDataFrame(geometry=[buffers])
+clipped_gdf = overlay(r, buffer_gdf, how="intersection")
+clipped_gdf.plot(ax=ax, edgecolor=None, column="bottom_condition")
+r.points.plot(ax=ax, marker=r"$\circ$", color="red")
 
 # %%
 gordons_coords = [-33.91611178427029, 151.2636983190627]
