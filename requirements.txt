@@ -1,0 +1,9 @@
+dateparser
+fitdecode
+folium
+geopandas 
+gpxpy
+matplotlib
+pandas
+pytz
+shapely

@@ -104,8 +104,8 @@ def get_gps_data():
 
 
 def make_dive_df(get_gps_data):
-    dives_LLT = get_gps_data()
-    dives_df = pd.DataFrame(dives_LLT).set_index("dt")
+    dives_llt = get_gps_data()
+    dives_df = pd.DataFrame(dives_llt).set_index("dt")
     dives_df["geometry"] = dives_df.apply(lambda row: Point(row.lon, row.lat), axis=1)
     dives_gdf = gp.GeoDataFrame(dives_df)
     return dives_df, dives_gdf
@@ -255,6 +255,14 @@ X_OFFSET_SMALL = 0.00015
 Y_OFFSET = 0.00003
 fig, ax = plt.subplots(figsize=(10, 7))
 
+
+# plot the swum paths and add a colourbar
+cax = all_gdf.plot(column="depth", cmap="rainbow", ax=ax, zorder=2)
+divider = make_axes_locatable(ax)
+cax_cb = divider.append_axes("right", size="2%", pad=0.05)
+cbar = plt.colorbar(cax.collections[0], cax=cax_cb)
+cbar.set_label("Depth")
+
 # Plot the voronoi of bottom conditions
 points = MultiPoint(list(intermediate_df.geometry))
 regions = voronoi_diagram(points)
@@ -277,16 +285,14 @@ buffer_gdf = gp.GeoDataFrame(geometry=[buffers])
 clipped_gdf = overlay(r, buffer_gdf, how="intersection")
 clipped_gdf["color"] = clipped_gdf["bottom_condition"].map(colors)
 clipped_gdf.plot(
-    ax=ax, edgecolor=None, column="bottom_condition", color=clipped_gdf["color"]
+    ax=ax,
+    edgecolor=None,
+    column="bottom_condition",
+    color=clipped_gdf["color"],
+    zorder=1,
 )
 # end voronoi
 
-# plot the swum paths and add a colourbar
-cax = all_gdf.plot(column="depth", cmap="rainbow", ax=ax)
-divider = make_axes_locatable(ax)
-cax_cb = divider.append_axes("right", size="2%", pad=0.05)
-cbar = plt.colorbar(cax.collections[0], cax=cax_cb)
-cbar.set_label("Depth")
 
 # add the markers
 intermediate_df.plot(ax=ax, marker="2")

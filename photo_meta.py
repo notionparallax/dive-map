@@ -700,14 +700,14 @@ photo_meta = [
         "filename": "GOPR0197.JPG",
         "marker_type": "intermediate",
         "marker_number": "",
-        "bottom_condition": "unspecified",
+        "bottom_condition": "kelp",
     },
     {
         "dt": datetime.datetime(2024, 3, 8, 10, 7, 36),
         "filename": "GOPR0198.JPG",
         "marker_type": "",
         "marker_number": "",
-        "bottom_condition": "unspecified",
+        "bottom_condition": "kelp",
     },
     {
         "dt": datetime.datetime(2024, 3, 8, 10, 7, 45),
@@ -812,7 +812,7 @@ photo_meta = [
         "filename": "GOPR0213.JPG",
         "marker_type": "numbered",
         "marker_number": 23,
-        "bottom_condition": "unspecified",
+        "bottom_condition": "kelp",
     },
     {
         "dt": datetime.datetime(2024, 3, 8, 10, 14, 30),
@@ -826,6 +826,6 @@ photo_meta = [
         "filename": "GOPR0215.JPG",
         "marker_type": "intermediate",
         "marker_number": "",
-        "bottom_condition": "unspecified",
+        "bottom_condition": "rocky",
     },
 ]

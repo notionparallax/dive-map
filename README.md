@@ -49,9 +49,9 @@ The stack for this is:
 3. A [GoPro 12](https://gopro.com/en/au/shop/cameras/hero12-black/CHDHX-121-master.html). These photos are useful because it means I don't need to get the wet notes out, I can just take photos and then see where the photos are on the GPS track. The 12 doesn't actually have GPS, but that doesn't really matter because it doesn't work underwater anyway. You could use any camera at all, we're just interested in the EXIF data.
 4. A bit of python in a GitHub Codespace. I can't install packages on my work computer, but I can do everything I need to in a remote machine, for free.
 
-Something that's interesting is that I didn't need to install anything on my laptop, or run any code locally*, I was able to export all the data using my phone and Google Drive.
+Something that's interesting is that I didn't need to install anything on my laptop, or run any code locally\*, I was able to export all the data using my phone and Google Drive.
 
-* That's not quite true, I did need to [extract the EXIF] data, but that only used libraries that are in the standard work image.
+- That's not quite true, I did need to [extract the EXIF] data, but that only used libraries that are in the standard work image.
 
 ### First GPS dive
 
@@ -93,4 +93,12 @@ I don't have data for a few of the markers. I'm not sure if the camera just didn
 
 ![](docs/marker_graph.png)
 
-This shows the numbered markers that I have waypoints for, but the missing points don't seem to be at the obvious corners. More will be revealed when I do another dive, and when I've put in the intermediate buoys.
+This shows the numbered markers that I have waypoints for, but the missing points don't seem to be at the obvious corners. More will be revealed when I do another dive, and when I've found a way to pinpoint the intermediate buoys.
+
+There's quite a lot going on in that graph now!
+
+- The orange Os are the numbered markers They are labelled with their marker number, and the file name of the photo
+- The ![](https://matplotlib.org/stable/_images/m08.png) is an un-numbered marker. (I've got a plan to map these out properly, but it's going to be a fair bit of work.) They are labelled with the file name of the photo
+- The rainbow line is the path we swam around the chain. It's coloured by depth, and that depth is shown in the colour bar on the right
+- The dashed circles around the numbered markers show tolerance. This is where the point _could_ be if the wind or current etc. was pushing the float around. They assume that the marker is the tip of a downward facing cone, and that cone has a tip angle of 70°. The circle is where the cone intersects the surface.
+- The coloured blocks in the background show the ground condition. Each photo has a ground condition, and it's using a [voronoi diagram](https://en.wikipedia.org/wiki/Voronoi_diagram) to assume that condition until another point's influence takes over. This is going to need a _lot_ more swimming around to get it to be useful, but the infrastructure is there for that data when it comes.
