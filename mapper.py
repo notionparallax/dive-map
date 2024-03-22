@@ -307,18 +307,21 @@ intermediate_df.apply(add_intermediate_label, axis=1)
 
 import matplotlib.lines as mlines
 
-markers = {"numbered": "2", "unnumbered": "$\circ$"}
+markers = [
+    {"description": "numbered", "marker": "$\circ$", "colour": "orange"},
+    {"description": "unnumbered", "marker": "2", "colour": "blue"},
+]
 
 # Create a Line2D object for each marker type and add it to the legend handles
-for marker_type, marker in markers.items():
+for marker in markers:
     line = mlines.Line2D(
         [],
         [],
-        color="black",
-        marker=marker,
+        color=marker["colour"],
+        marker=marker["marker"],
         linestyle="None",
         markersize=10,
-        label=marker_type,
+        label=marker["description"],
     )
     legend_handles.append(line)
 
