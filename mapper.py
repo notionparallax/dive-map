@@ -201,6 +201,11 @@ uni_marker_df = markers_df.groupby("marker_number").apply(
 
 
 # %%
+X_OFFSET = 0.0004
+X_OFFSET_SMALL = 0.0002
+Y_OFFSET = 0.00003
+
+
 def add_numbered_marker_label(row):
     """Add a numbered marker to the map for the major points on the trail."""
     ax.annotate(
@@ -213,6 +218,7 @@ def add_numbered_marker_label(row):
         ha="center",
         va="center",
         arrowprops=dict(arrowstyle="->", connectionstyle="arc3,rad=-0.05", color="k"),
+        zorder=3,
     )
 
 
@@ -228,6 +234,7 @@ def add_tolerance_circle(row):
             fill=False,
             alpha=0.4,
             linestyle="-.",
+            zorder=4,
         )
     )
 
@@ -246,14 +253,11 @@ def add_intermediate_label(row):
         va="center",
         arrowprops=dict(arrowstyle="->", connectionstyle="arc3,rad=-0.05", color="k"),
         alpha=0.6,
+        zorder=3,
     )
 
 
-# %%
-X_OFFSET = 0.0002
-X_OFFSET_SMALL = 0.00015
-Y_OFFSET = 0.00003
-fig, ax = plt.subplots(figsize=(10, 7))
+fig, ax = plt.subplots(figsize=(15, 9))
 
 
 # plot the swum paths and add a colourbar
@@ -295,12 +299,28 @@ clipped_gdf.plot(
 
 
 # add the markers
-intermediate_df.plot(ax=ax, marker="2")
-uni_marker_df.plot(ax=ax, marker="$\circ$")
+intermediate_df.plot(ax=ax, marker="2", zorder=3)
+uni_marker_df.plot(ax=ax, marker="$\circ$", zorder=3)
 uni_marker_df.apply(add_numbered_marker_label, axis=1)
 uni_marker_df.apply(add_tolerance_circle, axis=1)
 intermediate_df.apply(add_intermediate_label, axis=1)
 
+import matplotlib.lines as mlines
+
+markers = {"numbered": "2", "unnumbered": "$\circ$"}
+
+# Create a Line2D object for each marker type and add it to the legend handles
+for marker_type, marker in markers.items():
+    line = mlines.Line2D(
+        [],
+        [],
+        color="black",
+        marker=marker,
+        linestyle="None",
+        markersize=10,
+        label=marker_type,
+    )
+    legend_handles.append(line)
 
 tol_circle = plt.Circle(
     [], [], color="r", fill=False, alpha=0.4, linestyle="-.", label="Tolerance area"
