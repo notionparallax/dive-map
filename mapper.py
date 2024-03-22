@@ -305,6 +305,9 @@ boulder_garden = folium.FeatureGroup(
     name="boulder garden, depth and gps", show=False
 ).add_to(f_map)
 markers = folium.FeatureGroup(name="markers", show=True).add_to(f_map)
+intermediate_markers = folium.FeatureGroup(
+    name="intermediate markers", show=True
+).add_to(f_map)
 trail = folium.FeatureGroup(name="the trail", show=True).add_to(f_map)
 
 for index, row in all_gdf[all_gdf.description == "chain_loop"].iterrows():
@@ -355,6 +358,19 @@ for index, row in uni_marker_df.iterrows():
         opacity=1,
         tooltip=row.marker_text,
     ).add_to(markers)
+
+for index, row in intermediate_df.iterrows():
+    folium.CircleMarker(
+        location=[row.geometry.y, row.geometry.x],
+        radius=2,
+        color="white",
+        stroke=True,
+        fill=True,
+        weight=1,
+        fill_opacity=0.1,
+        opacity=1,
+        # tooltip=row.marker_text,
+    ).add_to(intermediate_markers)
 
 
 folium.LayerControl().add_to(f_map)
