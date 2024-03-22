@@ -672,7 +672,7 @@ photo_meta = [
         "filename": "GOPR0193.JPG",
         "marker_type": "intermediate",
         "marker_number": "",
-        "bottom_condition": "unspecified",
+        "bottom_condition": "kelp",
     },
     {
         "dt": datetime.datetime(2024, 3, 8, 10, 6, 47),
