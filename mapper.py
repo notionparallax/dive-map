@@ -324,6 +324,7 @@ for index, row in all_gdf[all_gdf.description == "chain_loop"].iterrows():
             "%H:%M:%S"
         ),
     ).add_to(chain_loop)
+
 for index, row in all_gdf[all_gdf.description == "boulder_garden"].iterrows():
     folium.CircleMarker(
         location=[row.geometry.y, row.geometry.x],
@@ -372,10 +373,8 @@ for index, row in intermediate_df.iterrows():
         # tooltip=row.marker_text,
     ).add_to(intermediate_markers)
 
-
 folium.LayerControl().add_to(f_map)
+f_map.save("docs/gordons_map.html")
 
 f_map
-# %%
-f_map.save("docs/gordons_map.html")
 # %%
