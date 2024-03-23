@@ -28,8 +28,9 @@ print(
 
 # %%
 photos = []
-for f in os.listdir("dive_photos"):
-    img = Image.open(f"dive_photos/{f}")
+dir_name = "dive_photos_2"
+for f in os.listdir(dir_name):
+    img = Image.open(os.path.join(dir_name, f))
     img_exif = img.getexif()
     dt = datetime.strptime(img_exif[306], "%Y:%m:%d %H:%M:%S")
     photos.append(
@@ -38,7 +39,9 @@ for f in os.listdir("dive_photos"):
             "datetime": dt,
             "marker_type": "",
             "marker_number": "",
+            "bottom_condition": "unspecified",
         }
     )
 photos
+
 # %%
