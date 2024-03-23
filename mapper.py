@@ -39,29 +39,51 @@ def get_depth_data_from_fit_file(file_name="ScubaDiving_2024-03-08T09_29_45.fit"
         return depth_data
 
 
-def make_depth_df():
-    depth_data_1 = get_depth_data_from_fit_file(
-        file_name="ScubaDiving_2024-03-08T09_29_45.fit"
-    )
-    depth_data_2 = get_depth_data_from_fit_file(
-        file_name="ScubaDiving_2024-03-08T11_26_21.fit"
-    )
-    depth_data = depth_data_1 + depth_data_2
-    depth_df = pd.DataFrame(depth_data).set_index("dt")
-    return depth_df
+def make_depth_df(fit_files: list[str]) -> pd.DataFrame:
+    depth_dataframes = []
+    for fit_file in fit_files:
+        raw = get_depth_data_from_fit_file(file_name=fit_file)
+        depth_df = pd.DataFrame(raw).set_index("dt")
+        depth_df["source_file"] = fit_file
+        depth_dataframes.append(depth_df)
+
+    depth_dataframe = pd.concat(depth_dataframes)
+    return depth_dataframe
 
 
-depth_df = make_depth_df()
-depth_df.plot(
+depth_df_1 = make_depth_df(
+    ["ScubaDiving_2024-03-08T09_29_45.fit", "ScubaDiving_2024-03-08T11_26_21.fit"]
+)
+depth_df_1.plot(
     title="Depth of the dives\n 1 around the gordon's chain, 2 around the boulder garden",
     ylabel="Depth (m)",
     xlabel="Time (UTC)",
 )
+# %%
+depth_df_2 = make_depth_df(
+    [
+        "ScubaDiving_2024-03-23T08_51_29.fit",
+        "ScubaDiving_2024-03-23T09_41_59.fit",
+        "ScubaDiving_2024-03-23T11_06_51.fit",
+    ]
+)
+depth_df_2.plot(
+    title="Depth of the dives\n 1 around bottom of the wall/desert interface,\n2 across to the other side",
+    ylabel="Depth (m)",
+    xlabel="Time (UTC)",
+)
+
 
 # %%
-fp = "20240308-090746 - Gordons.gpx"
-recorded_path = gp.read_file(fp, layer="tracks")
-recorded_path.plot()
+def plot_gps_trace(fp: str = "20240308-090746 - Gordons.gpx"):
+    recorded_path = gp.read_file(fp, layer="tracks")
+    recorded_path.plot()
+    return fp
+
+
+plot_gps_trace()
+plot_gps_trace(fp="20240323-081550 - Map dive Saturday morning.gpx")
+plot_gps_trace(fp="20240323-104518 - Dive 2.gpx")
 
 
 # %%
@@ -103,7 +125,7 @@ def get_gps_data():
     return dives_LLT
 
 
-def make_dive_df(get_gps_data):
+def make_dive_df():
     dives_llt = get_gps_data()
     dives_df = pd.DataFrame(dives_llt).set_index("dt")
     dives_df["geometry"] = dives_df.apply(lambda row: Point(row.lon, row.lat), axis=1)
@@ -112,7 +134,7 @@ def make_dive_df(get_gps_data):
 
 
 # TODO: get rid of one of these two
-dives_df, dives_gdf = make_dive_df(get_gps_data)
+dives_df, dives_gdf = make_dive_df()
 dives_gdf.plot()
 
 
@@ -134,20 +156,20 @@ photo_df = get_photo_data()
 
 # %%
 print("dives_df:", repr(dives_df.iloc[0].name))
-print("depth_df:", repr(depth_df.iloc[0].name))
+print("depth_df:", repr(depth_df_1.iloc[0].name))
 print("photo_df:", repr(photo_df.iloc[0].name))
 # %%
 # Convert all timestamps to UTC
 dives_df.index = dives_df.index.tz_convert("UTC")
-depth_df.index = depth_df.index.tz_convert("UTC")
+depth_df_1.index = depth_df_1.index.tz_convert("UTC")
 photo_df.index = photo_df.index.tz_convert("UTC")
 # %%
 print("dives_df:", repr(dives_df.iloc[0].name))
-print("depth_df:", repr(depth_df.iloc[0].name))
+print("depth_df:", repr(depth_df_1.iloc[0].name))
 print("photo_df:", repr(photo_df.iloc[0].name))
 # %%
 dives_df["source"] = "dives"
-depth_df["source"] = "depth"
+depth_df_1["source"] = "depth"
 photo_df["source"] = "photo"
 
 # %%
@@ -156,7 +178,7 @@ reduced_dives = dives_df
 # reduced_dives = reduced_dives[
 #     reduced_dives.index > depth_df.index[0]
 # ]  # wait until there's depth data
-all_df = pd.concat([reduced_dives, depth_df, photo_df])
+all_df = pd.concat([reduced_dives, depth_df_1, photo_df])
 all_df.sort_index(axis=0, inplace=True)
 temp_df = all_df.copy(deep=True)
 temp_df.index = temp_df.index.tz_localize(None)
