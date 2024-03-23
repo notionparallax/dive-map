@@ -78,16 +78,20 @@ depth_df_2.plot(
 def plot_gps_trace(fp: str = "20240308-090746 - Gordons.gpx"):
     recorded_path = gp.read_file(fp, layer="tracks")
     recorded_path.plot()
+    plt.title(fp)
     return fp
 
 
-plot_gps_trace()
-plot_gps_trace(fp="20240323-081550 - Map dive Saturday morning.gpx")
-plot_gps_trace(fp="20240323-104518 - Dive 2.gpx")
+first_dive_day = "20240308-090746 - Gordons.gpx"
+day_2_dive_1 = "20240323-081550 - Map dive Saturday morning.gpx"
+day_2_dive_2 = "20240323-104518 - Dive 2.gpx"
+plot_gps_trace(fp=first_dive_day)
+plot_gps_trace(fp=day_2_dive_1)
+plot_gps_trace(fp=day_2_dive_2)
 
 
 # %%
-def get_gps_data():
+def get_gps_data(fp):
     with open(fp, "r", encoding="utf-8") as gpx_file:
         # gpx is a gpx object which contains lots of metadata as well
         gpx = gpxpy.parse(gpx_file)
@@ -125,8 +129,8 @@ def get_gps_data():
     return dives_LLT
 
 
-def make_dive_df():
-    dives_llt = get_gps_data()
+def make_dive_df(fp):
+    dives_llt = get_gps_data(fp)
     dives_df = pd.DataFrame(dives_llt).set_index("dt")
     dives_df["geometry"] = dives_df.apply(lambda row: Point(row.lon, row.lat), axis=1)
     dives_gdf = gp.GeoDataFrame(dives_df)
@@ -134,7 +138,7 @@ def make_dive_df():
 
 
 # TODO: get rid of one of these two
-dives_df, dives_gdf = make_dive_df()
+dives_df, dives_gdf = make_dive_df(first_dive_day)
 dives_gdf.plot()
 
 
