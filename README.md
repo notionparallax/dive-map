@@ -18,7 +18,11 @@ The maps above are very sparse, so making one a bit better is going to be quite 
 
 ### GPS
 
-Following [Marco Bordieri](https://www.viz.net.au/do-it-yourself/a-surfaceable-gps)'s lead, I've bought myself a [waterproof box](https://www.anacondastores.com/fishing/fishing-storage/tackle-boxes/plano-guide-series-1450-waterproof-case/90038539) to put my phone in. I'm going to make a _very_ shoddy surface bouy out of a milk crate, a body board, and a dive flag [photos coming once I actually make it].
+Following [Marco Bordieri](https://www.viz.net.au/do-it-yourself/a-surfaceable-gps)'s lead, I've bought myself a [waterproof box](https://www.anacondastores.com/fishing/fishing-storage/tackle-boxes/plano-guide-series-1450-waterproof-case/90038539) to put my phone in. I'm going to make a _very_ shoddy surface bouy out of a milk crate, a body board, and a dive flag.
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/xZAZsOZbFWw?si=VZNyZmGbrrjtLiqe" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
+https://youtu.be/xZAZsOZbFWw?si=KpQPosB-lPe8R0lN
 
 The plan now is to drag that around the trail, and the other underwater features, to get a map of where I've been. Then merge the resulting `.gpx` file with the data from my watch (somehow) to get depths and important times.
 
