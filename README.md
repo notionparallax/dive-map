@@ -20,7 +20,7 @@ The maps above are very sparse, so making one a bit better is going to be quite 
 
 Following [Marco Bordieri](https://www.viz.net.au/do-it-yourself/a-surfaceable-gps)'s lead, I've bought myself a [waterproof box](https://www.anacondastores.com/fishing/fishing-storage/tackle-boxes/plano-guide-series-1450-waterproof-case/90038539) to put my phone in. I'm going to make a _very_ shoddy surface bouy out of a milk crate, a body board, and a dive flag.
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/xZAZsOZbFWw?si=VZNyZmGbrrjtLiqe" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+![](https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExdnU1NXdmZHlkdDV3Y2Nhcjh2dmpmaDFlZnp2OWE1NmRqMWlwcTMyZCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/3xRDrsbA7is1ot0EFy/giphy-downsized-large.gif)
 
 https://youtu.be/xZAZsOZbFWw?si=KpQPosB-lPe8R0lN
 
