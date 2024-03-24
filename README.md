@@ -57,7 +57,7 @@ Something that's interesting is that I didn't need to install anything on my lap
 
 - That's not quite true, I did need to [extract the EXIF] data, but that only used libraries that are in the standard work image.
 
-### First GPS dive
+### First and second GPS dive
 
 Tali and I went for a swim around the chain on 9/3/24 and dragged the GPS float (photos of that coming). I left the GPS running the whole morning and it was actually completely fine, no overheating or battery issues.
 
@@ -110,3 +110,27 @@ There's quite a lot going on in that graph now!
   | Photo                  | Metadata                                                                                                                                                                                                                                                                                                                                              |
   | ---------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
   | ![](docs/GOPR0193.JPG) | This is the data entry in `photo_meta.py`: <pre>{<br> "dt": datetime.datetime(2024, 3, 8, 10, 6, 29),<br> "filename": "GOPR0193.JPG",<br> "marker_type": "intermediate",<br> "marker_number": "",<br> "bottom_condition": "kelp",<br> }</pre> I don't know if keeping going with this method is the best idea, or if I should just use a spreadsheet. |
+
+### Third and fourth GPS dive
+
+Shuwen and I dived on Saturday the 23rd of March, and did a couple of things:
+
+1. Outline the edge of the deep sandy part next to the wall. If you're heading out into the ocean, the wall is on your left, and everything up to the wall is kelpy rock, and to your right is sand. There's not much to see down here, but I've got an edge now.
+1. Swam across to the other side. Not a huge amount to see, but it's shallow, so the sun beams were very pretty and sparkly. We saw 3 separate wobbegongs sleeping under rocks. This was useful because it gives a depth profile for the whole width of the bay, but more pragmatically, it shows that the scale is right. There's a bit at the turn around where we swim around a rock that sticks out of the water, so when the trace is drawn over the photo, that part matches up.
+
+I got a lot more bottom condition data points. I've been struggling with the voronoi, but it's semi working and it shows that I'm going to need way more data if I'm going to take that approach to mapping! I think the old fashioned approach is probably the way to go to some extent.
+
+Things to do on the next dives:
+
+- Swim around the bay with the gps, to get a perimeter. Probably as a snorkle and then I can sketch/photograph some features for the actual map drawing part
+- Visit the bommie drawn off marker 14 on the 1990 map, and swim a perimeter on it
+- try to find marker 2. Marker 3 doesn't have a number on it, as far as I can tell, so maybe 2 isn't there any more? Just needs a bit of searching.
+- Map the intermediate markers more carefully
+- Get some more perimeters of kelp beds etc.
+- Visit the cave at 12 (in 1990 numbers)
+- draw the wall, so that I can draw it onto the map in a useful way
+
+Things to do the the map:
+- Work out the numbering. When did there become 25 points? This might be a question for the scuba club?
+- add the same shortcut arrows and headings, as a homage to the 1990 map
+- Actually draw my map!
