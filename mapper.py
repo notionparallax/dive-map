@@ -9,6 +9,7 @@ import geopandas as gp
 import gpxpy
 import gpxpy.gpx
 import matplotlib as mpl
+import matplotlib.lines as mlines
 import matplotlib.patches as mpatches
 import matplotlib.pyplot as plt
 import pandas as pd
@@ -390,8 +391,6 @@ uni_marker_df.plot(ax=ax, marker="$\circ$", zorder=3)
 uni_marker_df.apply(add_numbered_marker_label, axis=1)
 uni_marker_df.apply(add_tolerance_circle, axis=1)
 intermediate_df.apply(add_intermediate_label, axis=1)
-
-import matplotlib.lines as mlines
 
 markers = [
     {"description": "numbered", "marker": "$\circ$", "colour": "orange"},
