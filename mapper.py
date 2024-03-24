@@ -236,9 +236,9 @@ all_df.sort_index(axis=0, inplace=True)
 # temp_df.index = temp_df.index.tz_localize(None)
 # temp_df.to_csv("all_data.csv")
 all_df.head()
+
+
 # %%
-
-
 def naieve_ffill(df, column):
     """Written by copilot"""
     last_valid = None
