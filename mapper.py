@@ -375,8 +375,8 @@ def add_intermediate_label(row):
     )
 
 
+# %%
 fig, ax = plt.subplots(figsize=(15, 9))
-
 
 # plot the swum paths and add a colourbar
 cax = all_gdf.plot(column="depth", cmap="rainbow", ax=ax, zorder=2)
@@ -386,6 +386,44 @@ cbar = plt.colorbar(cax.collections[0], cax=cax_cb)
 cbar.set_label("Depth")
 
 # Plot the voronoi of bottom conditions
+bottom_gdf = all_gdf[
+    (all_gdf.source == "photo") & (all_gdf.bottom_condition != "unspecified")
+]
+
+# Initialize an empty list to store the filtered data
+filtered_data = []
+
+# Iterate over the GeoDataFrame
+for i in range(len(bottom_gdf) - 1):
+    # Swap the coordinates in the Point objects
+    point1 = (bottom_gdf.iloc[i].geometry.y, bottom_gdf.iloc[i].geometry.x)
+    point2 = (bottom_gdf.iloc[i + 1].geometry.y, bottom_gdf.iloc[i + 1].geometry.x)
+
+    # Calculate the distance between the current point and the next point
+    distance = geodesic(point1, point2).meters
+
+    # If the distance is greater than or equal to 0.5 meters (500mm), keep the current point
+    if distance >= 1.5:
+        filtered_data.append(bottom_gdf.iloc[i])
+
+# Append the last point as it has no next point to compare with
+filtered_data.append(bottom_gdf.iloc[-1])
+# Convert the list to a GeoDataFrame
+filtered_gdf = gp.GeoDataFrame(pd.concat(filtered_data, axis=1).transpose())
+
+# Convert the points in the GeoDataFrame to a MultiPoint object
+points = MultiPoint(filtered_gdf.geometry.values)
+
+# Generate the Voronoi diagram
+voronoi_polygons = voronoi_diagram(points)
+
+# Convert the Voronoi polygons to a GeoDataFrame
+voronoi_gdf = gp.GeoDataFrame(
+    filtered_gdf["bottom_condition"],
+    geometry=list(voronoi_polygons.geoms),
+    crs=bottom_gdf.crs,
+)
+
 colors = {
     "rocky": "gray",
     "sandy": "khaki",
@@ -396,24 +434,35 @@ colors = {
     "low and rocky": "mediumaquamarine",
     "low": "lightgreen",
 }
+voronoi_gdf["colour"] = voronoi_gdf["bottom_condition"].map(colors)
+
 legend_handles = []
 for condition, color in colors.items():
     patch = mpatches.Patch(color=color, label=condition)
     legend_handles.append(patch)
 
-buffer_radius = 0.0005  # Set this to your desired radius
-buffers = Polygon(r.points.convex_hull).buffer(buffer_radius)
-buffer_gdf = gp.GeoDataFrame(geometry=[buffers])
-clipped_gdf = overlay(r, buffer_gdf, how="intersection")
-clipped_gdf["color"] = clipped_gdf["bottom_condition"].map(colors)
-clipped_gdf.plot(
+## I can't get this to work any more :(
+buffer_radius = 0.0008  # Set this to your desired radius
+# buffers = Polygon(MultiPoint(filtered_gdf.geometry.values).convex_hull).buffer(
+#     buffer_radius
+# )
+# buffer_gdf = gp.GeoDataFrame(geometry=[buffers])
+# clipped_gdf = overlay(filtered_gdf, voronoi_gdf, how="intersection")
+voronoi_gdf.plot(
     ax=ax,
     edgecolor=None,
-    column="bottom_condition",
-    color=clipped_gdf["color"],
+    # column="bottom_condition",
+    color=voronoi_gdf["colour"],
     zorder=1,
 )
-# end voronoi
+bounds = (
+    Polygon(MultiPoint(filtered_gdf.geometry.values).envelope)
+    .buffer(buffer_radius)
+    .bounds
+)
+ax.set_xlim([bounds[0], bounds[2]])
+ax.set_ylim([bounds[1], bounds[3]])
+## end voronoi
 
 
 # add the markers
