@@ -11,8 +11,8 @@ photo_meta = [
     {
         "filename": "GOPR0274.JPG",
         "datetime": datetime.datetime(2024, 3, 23, 8, 55, 3),
-        "marker_type": "",
-        "marker_number": "",
+        "marker_type": "numbered",
+        "marker_number": 3,
         "bottom_condition": "kelp",
     },
     {
