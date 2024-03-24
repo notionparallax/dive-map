@@ -355,16 +355,16 @@ cbar = plt.colorbar(cax.collections[0], cax=cax_cb)
 cbar.set_label("Depth")
 
 # Plot the voronoi of bottom conditions
-points = MultiPoint(list(intermediate_df.geometry))
-regions = voronoi_diagram(points)
-r = gp.GeoDataFrame(
-    {
-        "geometry": list(regions.geoms),
-        "points": intermediate_df.geometry,
-        "bottom_condition": intermediate_df.bottom_condition,
-    }
-)
-colors = {"rocky": "gray", "sandy": "khaki", "kelp": "seagreen", "unspecified": "white"}
+colors = {
+    "rocky": "gray",
+    "sandy": "khaki",
+    "kelp": "seagreen",
+    "low and sandy": "darkkhaki",
+    "sandy and kelp": "mediumseagreen",
+    "sandy and rocky": "thistle",
+    "low and rocky": "mediumaquamarine",
+    "low": "lightgreen",
+}
 legend_handles = []
 for condition, color in colors.items():
     patch = mpatches.Patch(color=color, label=condition)
