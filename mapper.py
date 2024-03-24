@@ -91,55 +91,96 @@ plot_gps_trace(fp=day_2_dive_2)
 
 
 # %%
-def get_gps_data(fp):
+def get_gps_data_single_dive(
+    fp,
+    description="a_nice_dive",
+    crop=False,
+    end_time="2024-03-08T02:25:26Z",
+    dive_end_time_delta=70,
+    dive_start_time_delta=120,
+):
     with open(fp, "r", encoding="utf-8") as gpx_file:
         # gpx is a gpx object which contains lots of metadata as well
         gpx = gpxpy.parse(gpx_file)
 
-    # filter it down to just the dives, because this also has the bus trip back to the shop
-    end_time = dateparser.parse("2024-03-08T02:25:26Z")
-    dive_2_end_time = end_time - timedelta(minutes=70)
-    dive_2_start_time = end_time - timedelta(minutes=120)
-    dive_1_end_time = end_time - timedelta(minutes=180)
-    dive_1_start_time = end_time - timedelta(minutes=250)
+    end_time = dateparser.parse(end_time)
+    dive_end_time = end_time - timedelta(minutes=dive_end_time_delta)
+    dive_start_time = end_time - timedelta(minutes=dive_start_time_delta)
 
-    dives_LLT = []
+    dives_lon_lat_time = []
     for track in gpx.tracks:
         for segment in track.segments:
             for point in segment.points:
-                if point.time < dive_1_end_time and point.time > dive_1_start_time:
-                    dives_LLT.append(
+                if (crop is False) or (
+                    point.time < dive_end_time and point.time > dive_start_time
+                ):
+                    dives_lon_lat_time.append(
                         {
                             "lon": point.longitude,
                             "lat": point.latitude,
                             "dt": point.time,
-                            "description": "chain_loop",
+                            "description": description,
                         }
                     )
-                elif point.time < dive_2_end_time and point.time > dive_2_start_time:
-                    dives_LLT.append(
-                        {
-                            "lon": point.longitude,
-                            "lat": point.latitude,
-                            "dt": point.time,
-                            "description": "boulder_garden",
-                        }
-                    )
+                # else:
+                #     pass  # this point is outside the crop range
 
-    return dives_LLT
+    return dives_lon_lat_time
 
 
-def make_dive_df(fp):
-    dives_llt = get_gps_data(fp)
-    dives_df = pd.DataFrame(dives_llt).set_index("dt")
+def make_dive_df(dives_lon_lat_time):
+    dives_df = pd.DataFrame(dives_lon_lat_time).set_index("dt")
     dives_df["geometry"] = dives_df.apply(lambda row: Point(row.lon, row.lat), axis=1)
     dives_gdf = gp.GeoDataFrame(dives_df)
-    return dives_df, dives_gdf
+    return dives_gdf
 
 
-# TODO: get rid of one of these two
-dives_df, dives_gdf = make_dive_df(first_dive_day)
-dives_gdf.plot()
+dives_lon_lat_time_day_1a = get_gps_data_single_dive(
+    first_dive_day,
+    description="chain_loop",
+    crop=True,
+    end_time="2024-03-08T02:25:26Z",
+    dive_end_time_delta=70,
+    dive_start_time_delta=120,
+)
+dives_gdf_1a = make_dive_df(dives_lon_lat_time_day_1a)
+dives_gdf_1a.plot()
+
+dives_lon_lat_time_day_1b = get_gps_data_single_dive(
+    first_dive_day,
+    description="boulder_garden",
+    crop=True,
+    end_time="2024-03-08T02:25:26Z",
+    dive_end_time_delta=180,
+    dive_start_time_delta=250,
+)
+dives_gdf_1b = make_dive_df(dives_lon_lat_time_day_1b)
+dives_gdf_1b.plot()
+
+dives_lon_lat_time_day_2a = get_gps_data_single_dive(
+    day_2_dive_1, description="wall_to_desert"
+)
+dives_gdf_2a = make_dive_df(dives_lon_lat_time_day_2a)
+dives_gdf_2a.plot()
+
+dives_lon_lat_time_day_2b = get_gps_data_single_dive(
+    day_2_dive_2, description="far_side_desert"
+)
+dives_gdf_2b = make_dive_df(dives_lon_lat_time_day_2b)
+dives_gdf_2b.plot()
+# %%
+dives_gdf = gp.GeoDataFrame(
+    pd.concat(
+        [
+            dives_gdf_1a,
+            dives_gdf_1b,
+            dives_gdf_2a,
+            dives_gdf_2b,
+        ]
+    )
+)
+dives_gdf.plot(column="description")
+plt.title(f"All dives so far ({', '.join( dives_gdf.description.unique())})")
 
 
 # %%
