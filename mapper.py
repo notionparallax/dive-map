@@ -15,10 +15,10 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import pytz
 from dateutil import tz
-from geopandas import overlay
+from geopy.distance import geodesic
 from mpl_toolkits.axes_grid1 import make_axes_locatable
-from shapely import centroid, offset_curve
-from shapely.geometry import MultiPoint, Point, Polygon
+from shapely import centroid
+from shapely.geometry import MultiPoint, Point, Polygon, box
 from shapely.ops import voronoi_diagram
 
 from photo_meta import photo_meta
