@@ -287,14 +287,18 @@ intermediate_df = all_gdf[
 ]
 markers_df["marker_text"] = markers_df.apply(make_marker_text, axis=1)
 # %%
-uni_marker_df = markers_df.groupby("marker_number").apply(
-    lambda grp: pd.Series(
-        {
-            "geometry": centroid(MultiPoint(list(grp.geometry))),
-            "marker_text": grp.marker_text[0],
-            "depth": grp.depth.mean(),
-        }
+uni_marker_df = (
+    markers_df.groupby("marker_number")
+    .apply(
+        lambda grp: pd.Series(
+            {
+                "geometry": centroid(MultiPoint(list(grp.geometry))),
+                "marker_text": grp.marker_text[0],
+                "depth": grp.depth.mean(),
+            }
+        )
     )
+    .sort_index()
 )
 
 
