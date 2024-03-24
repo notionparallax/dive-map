@@ -77,7 +77,7 @@ I overlaid the tracks onto a folium map, and then overlaid _that_ into the exist
 
 ![the overlaid maps from above, but with the GPS tracks as well](docs/gordons_with_gps_tracks.PNG)
 
-The first map was drawn in 1990 by Jöelle Devis, and it's really good. Odd that it's so hard to find on the internet, and odder that it hasn't been updated. I found it because the inset map is republished on [Michael McFadyen's website](https://www.michaelmcfadyenscuba.info/viewpage.php?page_id=282). My guess is that this map is drawn by dead reckoning, using distances and headings. It's also possible that sections of the chain have moved over the last 34 years.
+The first map was drawn in 1990 by Jöelle Devis, and it's really good. Odd that it's so hard to find on the internet, and odder that it hasn't been updated. I found it because the inset map is republished on [Michael McFadyen's website](https://www.michaelmcfadyenscuba.info/viewpage.php?page_id=282). My guess is that this map is drawn by dead reckoning, using distances and headings. It's also possible that sections of the chain have moved over the last 34 years. There is a whole load of interesting trail-history, as well as this full map [on the Gordon's bay scuba club's _club history_ page](https://www.gordonsbayscubadiving.com/clubHistory.html).
 
 ![a hand drawn map of the chain trail with a zoomed out context map as well](docs/gordons_map_1990.png)
 
