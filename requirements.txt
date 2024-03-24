@@ -8,3 +8,7 @@ pandas
 pytz
 shapely
 geopy
+
+earthengine-api
+contextily
+gcloud

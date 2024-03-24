@@ -2,7 +2,9 @@
 import math
 from datetime import timedelta
 
+import contextily as cx
 import dateparser
+import ee
 import fitdecode
 import folium
 import geopandas as gp
@@ -138,7 +140,7 @@ def get_gps_data_single_dive(
 def make_dive_df(dives_lon_lat_time):
     dives_df = pd.DataFrame(dives_lon_lat_time).set_index("dt")
     dives_df["geometry"] = dives_df.apply(lambda row: Point(row.lon, row.lat), axis=1)
-    dives_gdf = gp.GeoDataFrame(dives_df)
+    dives_gdf = gp.GeoDataFrame(dives_df, crs="EPSG:4326")
     return dives_gdf
 
 
@@ -378,6 +380,7 @@ def add_intermediate_label(row):
 # %%
 fig, ax = plt.subplots(figsize=(15, 9))
 
+
 # plot the swum paths and add a colourbar
 cax = all_gdf.plot(column="depth", cmap="rainbow", ax=ax, zorder=2)
 divider = make_axes_locatable(ax)
@@ -454,6 +457,7 @@ voronoi_gdf.plot(
     # column="bottom_condition",
     color=voronoi_gdf["colour"],
     zorder=1,
+    alpha=0.5,
 )
 bounds = (
     Polygon(MultiPoint(filtered_gdf.geometry.values).envelope)
@@ -462,8 +466,16 @@ bounds = (
 )
 ax.set_xlim([bounds[0], bounds[2]])
 ax.set_ylim([bounds[1], bounds[3]])
+
 ## end voronoi
 
+ee.Authenticate()
+ee.Initialize(project="bens-dive-map")
+cx.add_basemap(ax, crs=voronoi_gdf.crs, source=cx.providers.Esri.WorldImagery)
+# ValueError: The inferred zoom level of 35 is not valid
+# for the current tile provider. This can indicate that the
+# extent of your figure is wrong (e.g. too small extent, or
+# in the wrong coordinate reference system)
 
 # add the markers
 intermediate_df.plot(ax=ax, marker="2", zorder=3)
