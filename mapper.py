@@ -21,6 +21,9 @@ from shapely.geometry import MultiPoint, Point, Polygon
 from shapely.ops import voronoi_diagram
 
 from photo_meta import photo_meta
+from photo_meta_day_2 import photo_meta as photo_meta_day_2
+
+photo_meta = photo_meta + photo_meta_day_2
 
 
 # %% depth data
@@ -72,6 +75,9 @@ depth_df_2.plot(
     ylabel="Depth (m)",
     xlabel="Time (UTC)",
 )
+
+depth_df = pd.concat([depth_df_1, depth_df_2])
+# depth_df.plot() #This is boring because there's 2 weeks of empty space between dive one and dive 2
 
 
 # %%
@@ -187,7 +193,7 @@ plt.title(f"All dives so far ({', '.join( dives_gdf.description.unique())})")
 def get_photo_data():
     sydney_tz = tz.gettz("Australia/Sydney")
     for photo in photo_meta:
-        naive_dt = photo["dt"]
+        naive_dt = photo["datetime"]
         sydney_dt = naive_dt.replace(tzinfo=sydney_tz)
         utc_dt = sydney_dt.astimezone(tz.tzutc())
         photo["dt"] = utc_dt
@@ -200,41 +206,54 @@ photo_df = get_photo_data()
 
 
 # %%
-print("dives_df:", repr(dives_df.iloc[0].name))
-print("depth_df:", repr(depth_df_1.iloc[0].name))
+print("dives_df:", repr(dives_gdf.iloc[0].name))
+print("depth_df:", repr(depth_df.iloc[0].name))
 print("photo_df:", repr(photo_df.iloc[0].name))
 # %%
 # Convert all timestamps to UTC
-dives_df.index = dives_df.index.tz_convert("UTC")
+dives_gdf.index = dives_gdf.index.tz_convert("UTC")
 depth_df_1.index = depth_df_1.index.tz_convert("UTC")
 photo_df.index = photo_df.index.tz_convert("UTC")
 # %%
-print("dives_df:", repr(dives_df.iloc[0].name))
-print("depth_df:", repr(depth_df_1.iloc[0].name))
+print("dives_df:", repr(dives_gdf.iloc[0].name))
+print("depth_df:", repr(depth_df.iloc[0].name))
 print("photo_df:", repr(photo_df.iloc[0].name))
 # %%
-dives_df["source"] = "dives"
-depth_df_1["source"] = "depth"
+dives_gdf["source"] = "dives"
+depth_df["source"] = "depth"
 photo_df["source"] = "photo"
 
 # %%
-reduced_dives = dives_df
+reduced_dives = dives_gdf
 # reduced_dives = reduced_dives.iloc[::60]  # pick one frame a minute
 # reduced_dives = reduced_dives[
 #     reduced_dives.index > depth_df.index[0]
 # ]  # wait until there's depth data
-all_df = pd.concat([reduced_dives, depth_df_1, photo_df])
+all_df = pd.concat([reduced_dives, depth_df, photo_df])
 all_df.sort_index(axis=0, inplace=True)
-temp_df = all_df.copy(deep=True)
-temp_df.index = temp_df.index.tz_localize(None)
+# temp_df = all_df.copy(deep=True)
+# temp_df.index = temp_df.index.tz_localize(None)
 # temp_df.to_csv("all_data.csv")
-all_df.head(10)
+all_df.head()
 # %%
-all_df["depth"].ffill(inplace=True)
-all_df["depth"].fillna(0, inplace=True)
-all_df["filename"].ffill(inplace=True, limit=10)
-all_df["geometry"].ffill(inplace=True)
-all_df["description"].ffill(inplace=True)
+
+
+def naieve_ffill(df, column):
+    """Written by copilot"""
+    last_valid = None
+    for idx, value in df[column].items():
+        if pd.isna(value):
+            df.loc[idx, column] = last_valid
+        else:
+            last_valid = value
+
+
+all_df["depth"] = all_df["depth"].ffill()
+all_df["depth"] = all_df["depth"].fillna(0)
+all_df["filename"] = all_df["filename"].ffill(limit=10)
+naieve_ffill(all_df, "geometry")
+# all_df["geometry"] = all_df["geometry"].ffill()
+all_df["description"] = all_df["description"].ffill()
 all_df.drop(["lat", "lon"], axis=1, inplace=True, errors="ignore")
 all_df.head()
 # %%

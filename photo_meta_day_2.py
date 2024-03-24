@@ -1,13 +1,12 @@
 import datetime
 
-
 photo_meta = [
     {
         "filename": "GOPR0264.JPG",
         "datetime": datetime.datetime(2024, 3, 8, 12, 8, 19),
         "marker_type": "",
         "marker_number": "",
-        "bottom_condition": "low and rock",
+        "bottom_condition": "low and rocky",
     },
     {
         "filename": "GOPR0274.JPG",
@@ -28,14 +27,14 @@ photo_meta = [
         "datetime": datetime.datetime(2024, 3, 23, 8, 55, 43),
         "marker_type": "",
         "marker_number": "",
-        "bottom_condition": "low and sand",
+        "bottom_condition": "low and sandy",
     },
     {
         "filename": "GOPR0277.JPG",
         "datetime": datetime.datetime(2024, 3, 23, 8, 56, 23),
         "marker_type": "",
         "marker_number": "",
-        "bottom_condition": "low and sand",
+        "bottom_condition": "low and sandy",
     },
     {
         "filename": "GOPR0278.JPG",
@@ -56,21 +55,21 @@ photo_meta = [
         "datetime": datetime.datetime(2024, 3, 23, 8, 59, 19),
         "marker_type": "",
         "marker_number": "",
-        "bottom_condition": "low and rock",
+        "bottom_condition": "low and rocky",
     },
     {
         "filename": "GOPR0281.JPG",
         "datetime": datetime.datetime(2024, 3, 23, 9, 0, 11),
         "marker_type": "",
         "marker_number": "",
-        "bottom_condition": "low and rock",
+        "bottom_condition": "low and rocky",
     },
     {
         "filename": "GOPR0282.JPG",
         "datetime": datetime.datetime(2024, 3, 23, 9, 1, 39),
         "marker_type": "",
         "marker_number": "",
-        "bottom_condition": "low and rock",
+        "bottom_condition": "low and rocky",
     },
     {
         "filename": "GOPR0283.JPG",
@@ -113,14 +112,14 @@ photo_meta = [
         "datetime": datetime.datetime(2024, 3, 23, 9, 3, 16),
         "marker_type": "",
         "marker_number": "",
-        "bottom_condition": "low and rock",
+        "bottom_condition": "low and rocky",
     },
     {
         "filename": "GOPR0289.JPG",
         "datetime": datetime.datetime(2024, 3, 23, 9, 3, 24),
         "marker_type": "",
         "marker_number": "",
-        "bottom_condition": "low and rock",
+        "bottom_condition": "low and rocky",
     },
     {
         "filename": "GOPR0290.JPG",
@@ -1003,7 +1002,7 @@ photo_meta = [
         "marker_type": "",
         "marker_number": "",
         "bottom_condition": "sandy",
-        "note": "weird noodle thing",
+        "note": "Zoanthus Robustus",
     },
     {
         "filename": "GOPR0416.JPG",
