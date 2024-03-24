@@ -1,10 +1,12 @@
 # %%
 import math
+import os
 from datetime import timedelta
 
 import contextily as cx
 import dateparser
-import ee
+
+# import ee
 import fitdecode
 import folium
 import geopandas as gp
@@ -58,7 +60,10 @@ def make_depth_df(fit_files: list[str]) -> pd.DataFrame:
 
 
 depth_df_1 = make_depth_df(
-    ["ScubaDiving_2024-03-08T09_29_45.fit", "ScubaDiving_2024-03-08T11_26_21.fit"]
+    [
+        os.path.join("fit", "ScubaDiving_2024-03-08T09_29_45.fit"),
+        os.path.join("fit", "ScubaDiving_2024-03-08T11_26_21.fit"),
+    ]
 )
 depth_df_1.plot(
     title="Depth of the dives\n 1 around the gordon's chain, 2 around the boulder garden",
@@ -68,9 +73,9 @@ depth_df_1.plot(
 # %%
 depth_df_2 = make_depth_df(
     [
-        "ScubaDiving_2024-03-23T08_51_29.fit",
-        "ScubaDiving_2024-03-23T09_41_59.fit",
-        "ScubaDiving_2024-03-23T11_06_51.fit",
+        os.path.join("fit", "ScubaDiving_2024-03-23T08_51_29.fit"),
+        os.path.join("fit", "ScubaDiving_2024-03-23T09_41_59.fit"),
+        os.path.join("fit", "ScubaDiving_2024-03-23T11_06_51.fit"),
     ]
 )
 depth_df_2.plot(
@@ -91,9 +96,9 @@ def plot_gps_trace(fp: str = "20240308-090746 - Gordons.gpx"):
     return fp
 
 
-first_dive_day = "20240308-090746 - Gordons.gpx"
-day_2_dive_1 = "20240323-081550 - Map dive Saturday morning.gpx"
-day_2_dive_2 = "20240323-104518 - Dive 2.gpx"
+first_dive_day = os.path.join("gps", "20240308-090746 - Gordons.gpx")
+day_2_dive_1 = os.path.join("gps", "20240323-081550 - Map dive Saturday morning.gpx")
+day_2_dive_2 = os.path.join("gps", "20240323-104518 - Dive 2.gpx")
 plot_gps_trace(fp=first_dive_day)
 plot_gps_trace(fp=day_2_dive_1)
 plot_gps_trace(fp=day_2_dive_2)
@@ -469,13 +474,10 @@ ax.set_ylim([bounds[1], bounds[3]])
 
 ## end voronoi
 
-ee.Authenticate()
-ee.Initialize(project="bens-dive-map")
+# ee.Authenticate()
+# ee.Initialize(project="bens-dive-map")
 cx.add_basemap(ax, crs=voronoi_gdf.crs, source=cx.providers.Esri.WorldImagery)
-# ValueError: The inferred zoom level of 35 is not valid
-# for the current tile provider. This can indicate that the
-# extent of your figure is wrong (e.g. too small extent, or
-# in the wrong coordinate reference system)
+
 
 # add the markers
 intermediate_df.plot(ax=ax, marker="2", zorder=3)
