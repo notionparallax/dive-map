@@ -146,9 +146,9 @@ dives_lon_lat_time_day_1a = get_gps_data_single_dive(
     first_dive_day,
     description="chain_loop",
     crop=True,
+    dive_end_time_delta=180,
+    dive_start_time_delta=250,
     end_time="2024-03-08T02:25:26Z",
-    dive_end_time_delta=70,
-    dive_start_time_delta=120,
 )
 dives_gdf_1a = make_dive_df(dives_lon_lat_time_day_1a)
 dives_gdf_1a.plot()
@@ -158,20 +158,31 @@ dives_lon_lat_time_day_1b = get_gps_data_single_dive(
     description="boulder_garden",
     crop=True,
     end_time="2024-03-08T02:25:26Z",
-    dive_end_time_delta=180,
-    dive_start_time_delta=250,
+    dive_end_time_delta=70,
+    dive_start_time_delta=120,
 )
 dives_gdf_1b = make_dive_df(dives_lon_lat_time_day_1b)
 dives_gdf_1b.plot()
 
 dives_lon_lat_time_day_2a = get_gps_data_single_dive(
-    day_2_dive_1, description="wall_to_desert"
+    day_2_dive_1,
+    description="wall_to_desert",
+    crop=True,
+    end_time="2024-03-22 22:52:06+00:00",
+    dive_end_time_delta=5,
+    dive_start_time_delta=65,
 )
+# ((dives_gdf_2b.index.max()-dives_gdf_2b.index.min()).total_seconds() / 60)-15,
 dives_gdf_2a = make_dive_df(dives_lon_lat_time_day_2a)
 dives_gdf_2a.plot()
 
 dives_lon_lat_time_day_2b = get_gps_data_single_dive(
-    day_2_dive_2, description="far_side_desert"
+    day_2_dive_2,
+    description="far_side_desert",
+    crop=True,
+    end_time="2024-03-23 01:14:03.999000+00:00",
+    dive_end_time_delta=10,
+    dive_start_time_delta=68,
 )
 dives_gdf_2b = make_dive_df(dives_lon_lat_time_day_2b)
 dives_gdf_2b.plot()
