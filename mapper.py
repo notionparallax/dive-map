@@ -502,26 +502,7 @@ plt.savefig("docs/marker_graph.png")
 print(all_gdf[all_gdf.source == "photo"].shape[0], "photos")
 
 
-# %%
-# Your existing code
-points = MultiPoint(list(intermediate_df.geometry))
-regions = voronoi_diagram(points)
-r = gp.GeoDataFrame(
-    {
-        "geometry": list(regions.geoms),
-        "points": intermediate_df.geometry,
-        "bottom_condition": intermediate_df.bottom_condition,
-    }
-)
-
-buffer_radius = 0.0005  # Set this to your desired radius
-buffers = Polygon(r.points.convex_hull).buffer(buffer_radius)
-buffer_gdf = gp.GeoDataFrame(geometry=[buffers])
-clipped_gdf = overlay(r, buffer_gdf, how="intersection")
-clipped_gdf.plot(ax=ax, edgecolor=None, column="bottom_condition")
-r.points.plot(ax=ax, marker=r"$\circ$", color="red")
-
-# %%
+# %% folium map time
 gordons_coords = [-33.91611178427029, 151.2636983190627]
 
 
