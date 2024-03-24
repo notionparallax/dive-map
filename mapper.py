@@ -324,6 +324,22 @@ def add_numbered_marker_label(row):
     )
 
 
+def add_note_label(row):
+    """Add a note to th map for something notable."""
+    ax.annotate(
+        text=row.note,
+        xy=[row.geometry.x, row.geometry.y],
+        xytext=[row.geometry.x + X_OFFSET, row.geometry.y + X_OFFSET],
+        xycoords="data",
+        size="small",
+        color="k",
+        ha="center",
+        va="center",
+        arrowprops=dict(arrowstyle="->", connectionstyle="arc3,rad=-0.05", color="k"),
+        zorder=3,
+    )
+
+
 def add_tolerance_circle(row):
     """Add a circle to each numbered marker to indicate how much uncertainty there is for a given worst case angle."""
     worst_case_cord_angle = 35
@@ -406,6 +422,7 @@ uni_marker_df.plot(ax=ax, marker="$\circ$", zorder=3)
 uni_marker_df.apply(add_numbered_marker_label, axis=1)
 uni_marker_df.apply(add_tolerance_circle, axis=1)
 intermediate_df.apply(add_intermediate_label, axis=1)
+all_gdf[all_gdf.note.notnull()].apply(add_note_label, axis=1)
 
 markers = [
     {"description": "numbered", "marker": "$\circ$", "colour": "orange"},
