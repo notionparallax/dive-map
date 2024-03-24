@@ -516,7 +516,6 @@ def depth_to_colour(depth):
     return f"""rgb({c[0]*255} {c[1]*255} {c[2]*255})"""
 
 
-# %%
 f_map = folium.Map(
     location=gordons_coords,
     # tiles="CartoDB Positron",
@@ -525,47 +524,53 @@ f_map = folium.Map(
     name="Esri Satellite",
     zoom_start=17,
 )
-chain_loop = folium.FeatureGroup(name="chain trail, depth and gps", show=True).add_to(
+dive_1 = folium.FeatureGroup(name="chain trail, depth and gps", show=False).add_to(
     f_map
 )
-boulder_garden = folium.FeatureGroup(
-    name="boulder garden, depth and gps", show=False
+dive_2 = folium.FeatureGroup(name="boulder garden, depth and gps", show=False).add_to(
+    f_map
+)
+dive_3 = folium.FeatureGroup(
+    name="along the bottom of the wall's rocks, depth and gps", show=False
 ).add_to(f_map)
+dive_4 = folium.FeatureGroup(
+    name="across to the other side and back, depth and gps", show=False
+).add_to(f_map)
+
 markers = folium.FeatureGroup(name="markers", show=True).add_to(f_map)
 intermediate_markers = folium.FeatureGroup(
     name="intermediate markers", show=True
 ).add_to(f_map)
 trail = folium.FeatureGroup(name="the trail", show=True).add_to(f_map)
 
-for index, row in all_gdf[all_gdf.description == "chain_loop"].iterrows():
-    folium.CircleMarker(
-        location=[row.geometry.y, row.geometry.x],
-        radius=2,
-        color=depth_to_colour(row.depth),
-        stroke=False,
-        fill=True,
-        weight=3,
-        fill_opacity=0.6,
-        opacity=1,
-        tooltip=row.name.astimezone(pytz.timezone("Australia/Sydney")).strftime(
-            "%H:%M:%S"
-        ),
-    ).add_to(chain_loop)
 
-for index, row in all_gdf[all_gdf.description == "boulder_garden"].iterrows():
-    folium.CircleMarker(
-        location=[row.geometry.y, row.geometry.x],
-        radius=2,
-        color=depth_to_colour(row.depth),
-        stroke=False,
-        fill=True,
-        weight=3,
-        fill_opacity=0.6,
-        opacity=1,
-        tooltip=row.name.astimezone(pytz.timezone("Australia/Sydney")).strftime(
+def add_depth_trace_to_map(
+    all_gdf, to_add_to, filter_name="chain_loop", depth_filter=-0.3, radius=2
+):
+    for index, row in all_gdf[
+        (all_gdf.description == filter_name) & (all_gdf.depth < depth_filter)
+    ].iterrows():
+        time = row.name.astimezone(pytz.timezone("Australia/Sydney")).strftime(
             "%H:%M:%S"
-        ),
-    ).add_to(boulder_garden)
+        )
+        tt = f"{time} {row.depth}"
+        folium.CircleMarker(
+            location=[row.geometry.y, row.geometry.x],
+            radius=radius,
+            color=depth_to_colour(row.depth),
+            stroke=False,
+            fill=True,
+            weight=3,
+            fill_opacity=0.6,
+            opacity=1,
+            tooltip=tt,
+        ).add_to(to_add_to)
+
+
+add_depth_trace_to_map(all_gdf, dive_1, filter_name="chain_loop")
+add_depth_trace_to_map(all_gdf, dive_2, filter_name="boulder_garden", radius=1)
+add_depth_trace_to_map(all_gdf, dive_3, filter_name="wall_to_desert", radius=1)
+add_depth_trace_to_map(all_gdf, dive_4, filter_name="far_side_desert", radius=1)
 
 folium.PolyLine(
     locations=[[p.y, p.x] for p in uni_marker_df.geometry],
