@@ -249,8 +249,8 @@ photo_meta = [
     {
         "datetime": datetime.datetime(2024, 3, 8, 9, 47, 56),
         "filename": "GOPR0133.JPG",
-        "marker_type": "intermediate",
-        "marker_number": "",
+        "marker_type": "numbered",
+        "marker_number": 7,
         "bottom_condition": "sandy",
     },
     {
