@@ -5,8 +5,6 @@ from datetime import timedelta
 
 import contextily as cx
 import dateparser
-
-# import ee
 import fitdecode
 import folium
 import geopandas as gp
@@ -16,6 +14,7 @@ import matplotlib as mpl
 import matplotlib.lines as mlines
 import matplotlib.patches as mpatches
 import matplotlib.pyplot as plt
+import numpy as np
 import pandas as pd
 import pytz
 from dateutil import tz
@@ -382,6 +381,54 @@ def add_intermediate_label(row):
     )
 
 
+def draw_shortcut_arrow(all_gdf, ax, from_marker_number=3, to_marker_number=14):
+    point_a = MultiPoint(
+        all_gdf[all_gdf.marker_number == from_marker_number].geometry
+    ).centroid
+    point_b = MultiPoint(
+        all_gdf[all_gdf.marker_number == to_marker_number].geometry
+    ).centroid
+
+    # compute angle in raw data coordinates (no manual transforms)
+    dy = point_b.y - point_a.y
+    dx = point_b.x - point_a.x
+    angle = np.rad2deg(np.arctan2(dy, dx))
+    midpoint = Point((point_a.x + point_b.x) / 2, (point_a.y + point_b.y) / 2)
+
+    # annotate with transform_rotates_text to align text and line
+    ax.text(
+        midpoint.x,
+        midpoint.y,
+        f"{int(angle%360)}º",
+        ha="center",
+        va="center",
+        size="small",
+        transform_rotates_text=True,
+        rotation=angle,
+        rotation_mode="anchor",
+    )
+
+    ax.annotate(
+        text="",
+        xy=[point_b.x, point_b.y],
+        xytext=[point_a.x, point_a.y],
+        xycoords="data",
+        size="small",
+        color="k",
+        ha="center",
+        va="bottom",
+        arrowprops=dict(
+            arrowstyle="->",
+            connectionstyle="arc3",
+            linestyle=(0, (5, 5)),
+            linewidth=0.8,
+            shrinkA=10,
+            shrinkB=10,
+        ),
+        zorder=3,
+    )
+
+
 # %%
 fig, ax = plt.subplots(figsize=(15, 9))
 
@@ -442,6 +489,7 @@ colors = {
     "low and rocky": "mediumaquamarine",
     "low": "lightgreen",
 }
+
 voronoi_gdf["colour"] = voronoi_gdf["bottom_condition"].map(colors)
 
 legend_handles = []
@@ -474,8 +522,7 @@ ax.set_ylim([bounds[1], bounds[3]])
 
 ## end voronoi
 
-# ee.Authenticate()
-# ee.Initialize(project="bens-dive-map")
+# Add context image
 cx.add_basemap(ax, crs=voronoi_gdf.crs, source=cx.providers.Esri.WorldImagery)
 
 
@@ -486,6 +533,14 @@ uni_marker_df.apply(add_numbered_marker_label, axis=1)
 uni_marker_df.apply(add_tolerance_circle, axis=1)
 intermediate_df.apply(add_intermediate_label, axis=1)
 all_gdf[all_gdf.note.notnull()].apply(add_note_label, axis=1)
+
+
+# Add the shortcut arrows
+# This should be 4 to 14, but I haven't found marker 4 yet
+draw_shortcut_arrow(all_gdf, ax, from_marker_number=5, to_marker_number=14)
+draw_shortcut_arrow(all_gdf, ax, from_marker_number=11, to_marker_number=16)
+draw_shortcut_arrow(all_gdf, ax, from_marker_number=23, to_marker_number=5)
+
 
 markers = [
     {"description": "numbered", "marker": "$\circ$", "colour": "orange"},
