@@ -282,7 +282,9 @@ all_gdf = gp.GeoDataFrame(all_df)
 def make_marker_text(row):
     filename = row.filename.replace(".JPG", "")
     if row.marker_type == "numbered":
-        return f"""{row.marker_number if row.marker_number else "-"} ({filename})"""
+        return (
+            f"""{row.marker_number if row.marker_number else "-"}"""  # ({filename})"""
+        )
     else:
         return ""
 
@@ -309,9 +311,9 @@ uni_marker_df = (
 
 
 # %%
-X_OFFSET = 0.0004
+X_OFFSET = 0.0001
 X_OFFSET_SMALL = 0.0002
-Y_OFFSET = 0.00003
+Y_OFFSET = 0.000015
 
 
 def add_numbered_marker_label(row):
@@ -434,7 +436,9 @@ fig, ax = plt.subplots(figsize=(15, 9))
 
 
 # plot the swum paths and add a colourbar
-cax = all_gdf.plot(column="depth", cmap="rainbow", ax=ax, zorder=2)
+cax = all_gdf.plot(
+    column="depth", cmap="rainbow", ax=ax, zorder=2, gid="depth_gps_trace"
+)
 divider = make_axes_locatable(ax)
 cax_cb = divider.append_axes("right", size="2%", pad=0.05)
 cbar = plt.colorbar(cax.collections[0], cax=cax_cb)
@@ -466,8 +470,20 @@ filtered_data.append(bottom_gdf.iloc[-1])
 # Convert the list to a GeoDataFrame
 filtered_gdf = gp.GeoDataFrame(pd.concat(filtered_data, axis=1).transpose())
 
+# Load in the click data
+json_df = pd.read_json("click_conditions.json")
+click_gdf = gp.GeoDataFrame(
+    geometry=json_df.apply(lambda row: Point(row.lon, row.lat), axis=1)
+)
+click_gdf["bottom_condition"] = json_df.condition
+
+# concat it to the bottom of the dived data
+filtered_gdf = pd.concat([filtered_gdf, click_gdf])
+
+
 # Convert the points in the GeoDataFrame to a MultiPoint object
 points = MultiPoint(filtered_gdf.geometry.values)
+
 
 # Generate the Voronoi diagram
 voronoi_polygons = voronoi_diagram(points)
@@ -488,7 +504,13 @@ colors = {
     "sandy and rocky": "thistle",
     "low and rocky": "mediumaquamarine",
     "low": "lightgreen",
+    "shore_rocks": "dimgrey",
+    "beach": "papayawhip",
 }
+# temp until voronoi is sorted out
+filtered_gdf["colour"] = filtered_gdf["bottom_condition"].map(colors)
+filtered_gdf.plot(color=filtered_gdf.colour, ax=ax, gid="bottom_condition_markers")
+# temp until voronoi is sorted out
 
 voronoi_gdf["colour"] = voronoi_gdf["bottom_condition"].map(colors)
 
@@ -498,20 +520,22 @@ for condition, color in colors.items():
     legend_handles.append(patch)
 
 ## I can't get this to work any more :(
-buffer_radius = 0.0008  # Set this to your desired radius
+buffer_radius = 0.0003  # Set this to your desired radius
 # buffers = Polygon(MultiPoint(filtered_gdf.geometry.values).convex_hull).buffer(
 #     buffer_radius
 # )
 # buffer_gdf = gp.GeoDataFrame(geometry=[buffers])
 # clipped_gdf = overlay(filtered_gdf, voronoi_gdf, how="intersection")
-voronoi_gdf.plot(
-    ax=ax,
-    edgecolor=None,
-    # column="bottom_condition",
-    color=voronoi_gdf["colour"],
-    zorder=1,
-    alpha=0.5,
-)
+# TODO: The indexing between the cells and the colours is off. This needs to be
+# pulled back into line, and then the voronoi plot uncommented.
+# voronoi_gdf.plot(
+#     ax=ax,
+#     edgecolor=None,
+#     # column="bottom_condition",
+#     color=voronoi_gdf["colour"],
+#     zorder=1,
+#     alpha=0.9,
+# )
 bounds = (
     Polygon(MultiPoint(filtered_gdf.geometry.values).envelope)
     .buffer(buffer_radius)
@@ -527,8 +551,8 @@ cx.add_basemap(ax, crs=voronoi_gdf.crs, source=cx.providers.Esri.WorldImagery)
 
 
 # add the markers
-intermediate_df.plot(ax=ax, marker="2", zorder=3)
-uni_marker_df.plot(ax=ax, marker="$\circ$", zorder=3)
+intermediate_df.plot(ax=ax, marker="2", zorder=3, gid="intermediate_markers")
+uni_marker_df.plot(ax=ax, marker="$\circ$", zorder=3, gid="numbered_markers")
 uni_marker_df.apply(add_numbered_marker_label, axis=1)
 uni_marker_df.apply(add_tolerance_circle, axis=1)
 intermediate_df.apply(add_intermediate_label, axis=1)
@@ -568,6 +592,7 @@ ax.legend(handles=legend_handles)
 ax.set_title("Gordon's bay trail, coloured by depth")
 plt.tight_layout()
 plt.savefig("docs/marker_graph.png")
+plt.savefig("docs/marker_graph.svg")
 print(all_gdf[all_gdf.source == "photo"].shape[0], "photos")
 
 

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Simple Map</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <style>
+      .leaflet-container {
+        cursor: crosshair;
+      }
+      #mapid {
+        height: 90vh;
+      }
+    </style>
+  </head>
+  <body>
+    <div>Condition: <input id="condition" /></div>
+    <div id="mapid"></div>
+    <script>
+      var map = L.map("mapid").setView(
+        [-33.91611178427029, 151.2636983190627],
+        17
+      );
+
+      L.tileLayer(
+        "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
+        {
+          attribution: "Esri",
+          detectRetina: false,
+          maxNativeZoom: 18,
+          maxZoom: 18,
+          minZoom: 0,
+          noWrap: false,
+          opacity: 1,
+          subdomains: "abc",
+          tms: false,
+        }
+      ).addTo(map);
+
+      function onMapClick(e) {
+        const report = {
+          lat: e.latlng.lat,
+          lon: e.latlng.lng,
+          condition: document.getElementById("condition").value,
+        };
+        console.log(report);
+      }
+
+      map.on("click", onMapClick);
+    </script>
+  </body>
+</html>
