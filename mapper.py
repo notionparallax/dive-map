@@ -29,6 +29,8 @@ from photo_meta_day_2 import photo_meta as photo_meta_day_2
 
 photo_meta = photo_meta + photo_meta_day_2
 
+plt.rcParams["svg.fonttype"] = "none"
+
 
 # %% depth data
 def get_depth_data_from_fit_file(file_name="ScubaDiving_2024-03-08T09_29_45.fit"):
