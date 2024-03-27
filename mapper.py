@@ -104,6 +104,11 @@ plot_gps_trace(fp=first_dive_day)
 plot_gps_trace(fp=day_2_dive_1)
 plot_gps_trace(fp=day_2_dive_2)
 
+# %%
+plot_gps_trace(fp=day_2_dive_1)
+p1 = Point()
+distance = geodesic(point1, point2).meters
+
 
 # %%
 def get_gps_data_single_dive(
