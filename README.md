@@ -134,3 +134,12 @@ Things to do the the map:
 - Work out the numbering. When did there become 25 points? This might be a question for the scuba club?
 - add the same shortcut arrows and headings, as a homage to the 1990 map
 - Actually draw my map!
+
+display todos (things to do before this goes to illustrator)
+
+- change swim traces from dots to polylines
+- remove intermediate photo labels
+- turn off axis ticks and tick labels
+- make sure the rest of the bottom condition markers are plotting (potentially fo an n^2 loop to check for inclusion so colour the cells properly?)
+- check that `plt.rcParams['svg.fonttype'] = 'none'` is actually outputting text not curves
+- 
