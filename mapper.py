@@ -18,10 +18,11 @@ import numpy as np
 import pandas as pd
 import pytz
 from dateutil import tz
+from geopy import Point as geopy_pt
 from geopy.distance import geodesic
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 from shapely import centroid
-from shapely.geometry import MultiPoint, Point, Polygon, box
+from shapely.geometry import LineString, MultiPoint, Point, Polygon, box
 from shapely.ops import voronoi_diagram
 
 from photo_meta import photo_meta
@@ -104,10 +105,72 @@ plot_gps_trace(fp=first_dive_day)
 plot_gps_trace(fp=day_2_dive_1)
 plot_gps_trace(fp=day_2_dive_2)
 
+
 # %%
-plot_gps_trace(fp=day_2_dive_1)
-p1 = Point()
-distance = geodesic(point1, point2).meters
+fp = day_2_dive_1
+recorded_path = gp.read_file(fp, layer="tracks")
+ax = recorded_path.plot()
+
+
+starting_point = geopy_pt(-33.91585, 151.2650)
+scalebar_distances = [0, 5, 10, 15, 20, 50, 100]
+
+
+def move_pt(starting_point, meters, bearing):
+    d = geodesic(meters=meters)
+    new_point = d.destination(point=starting_point, bearing=bearing)
+    return new_point
+
+
+def draw_scale_bar(starting_point, scalebar_distances, thickness=5):
+    scalebar_lines = []
+
+    number_points = [starting_point]
+
+    for i, distance in enumerate(
+        scalebar_distances[1:], 1
+    ):  # start from the second item
+        start = scalebar_distances[i - 1]
+        end = distance
+
+        # Move east for the specified distance
+        east_pt = move_pt(starting_point, end - start, 90)
+
+        number_points.append(east_pt)
+        # Create a line from the starting point to the east point
+        # Note the reversal of coordinates for shapely
+        line_east = LineString(
+            [
+                (starting_point.longitude, starting_point.latitude),
+                (east_pt.longitude, east_pt.latitude),
+            ]
+        )
+        scalebar_lines.append(line_east)
+
+        # Move north or south for 2 meters
+        ns_pt = move_pt(east_pt, thickness, 0 if i % 2 == 0 else 180)
+
+        # Create a line from the east point to the north/south point
+        # Note the reversal of coordinates for shapely
+        line_ns = LineString(
+            [(east_pt.longitude, east_pt.latitude), (ns_pt.longitude, ns_pt.latitude)]
+        )
+        scalebar_lines.append(line_ns)
+
+        # The north/south point becomes the new starting point for the next iteration
+        starting_point = ns_pt
+
+        x_pos = move_pt(starting_point, thickness / 2, 0).latitude
+
+    number_points = [Point(p.longitude, x_pos) for p in number_points]
+    return {"scalebar_lines": scalebar_lines, "number_points": number_points}
+
+
+scalebar_lines = draw_scale_bar(starting_point, scalebar_distances)
+scale_gdf = gp.GeoDataFrame(geometry=scalebar_lines["scalebar_lines"])
+scale_gdf.plot(ax=ax, color="red")
+for i, p in enumerate(scalebar_lines["number_points"]):
+    ax.text(p.x, p.y, scalebar_distances[i], ha="center", fontsize=5)
 
 
 # %%
