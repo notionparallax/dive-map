@@ -122,24 +122,24 @@ I got a lot more bottom condition data points. I've been struggling with the vor
 
 Things to do on the next dives:
 
-- Swim around the bay with the gps, to get a perimeter. Probably as a snorkle and then I can sketch/photograph some features for the actual map drawing part
-- Visit the bommie drawn off marker 14 on the 1990 map, and swim a perimeter on it
-- try to find marker 2. Marker 3 doesn't have a number on it, as far as I can tell, so maybe 2 isn't there any more? Just needs a bit of searching.
-- Map the intermediate markers more carefully
-- Get some more perimeters of kelp beds etc.
-- Visit the cave at 12 (in 1990 numbers)
-- draw the wall, so that I can draw it onto the map in a useful way
+- [ ] Swim around the bay with the gps, to get a perimeter. Probably as a snorkle and then I can sketch/photograph some features for the actual map drawing part
+- [ ] Visit the bommie drawn off marker 14 on the 1990 map, and swim a perimeter on it
+- [ ] try to find marker 2. Marker 3 doesn't have a number on it, as far as I can tell, so maybe 2 isn't there any more? Just needs a bit of searching.
+- [ ] Map the intermediate markers more carefully
+- [ ] Get some more perimeters of kelp beds etc.
+- [ ] Visit the cave at 12 (in 1990 numbers)
+- [ ] draw the wall, so that I can draw it onto the map in a useful way
 
 Things to do the the map:
-- Work out the numbering. When did there become 25 points? This might be a question for the scuba club?
-- add the same shortcut arrows and headings, as a homage to the 1990 map
-- Actually draw my map!
+- [ ] Work out the numbering. When did there become 25 points? This might be a question for the scuba club?
+- [x] add the same shortcut arrows and headings, as a homage to the 1990 map
+- [x] add a scale bar and north arrow
+- [ ] Actually draw my map!
 
 display todos (things to do before this goes to illustrator)
 
-- change swim traces from dots to polylines
-- remove intermediate photo labels
-- turn off axis ticks and tick labels
-- make sure the rest of the bottom condition markers are plotting (potentially fo an n^2 loop to check for inclusion so colour the cells properly?)
-- check that `plt.rcParams['svg.fonttype'] = 'none'` is actually outputting text not curves
-- 
+- [ ] change swim traces from dots to polylines
+- [x] remove intermediate photo labels
+- [ ] turn off axis ticks and tick labels
+- [ ] make sure the rest of the bottom condition markers are plotting (potentially fo an n^2 loop to check for inclusion so colour the cells properly?)
+- [ ] check that `plt.rcParams['svg.fonttype'] = 'none'` is actually outputting text not curves
