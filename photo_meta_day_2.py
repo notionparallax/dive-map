@@ -806,7 +806,6 @@ photo_meta = [
         "marker_type": "",
         "marker_number": "",
         "bottom_condition": "sandy",
-        "note": "Wobbegong cave",
     },
     {
         "filename": "GOPR0389.JPG",
@@ -822,7 +821,6 @@ photo_meta = [
         "marker_type": "",
         "marker_number": "",
         "bottom_condition": "sandy",
-        "note": "Wobbegong cave",
     },
     {
         "filename": "GOPR0391.JPG",
@@ -956,7 +954,6 @@ photo_meta = [
         "marker_type": "",
         "marker_number": "",
         "bottom_condition": "rocky",
-        "note": "wobbegong cave",
     },
     {
         "filename": "GOPR0410.JPG",
@@ -972,7 +969,6 @@ photo_meta = [
         "marker_type": "",
         "marker_number": "",
         "bottom_condition": "rocky",
-        "note": "wobbegong cave",
     },
     {
         "filename": "GOPR0412.JPG",
@@ -980,7 +976,6 @@ photo_meta = [
         "marker_type": "",
         "marker_number": "",
         "bottom_condition": "rocky",
-        "note": "wobbegong cave",
     },
     {
         "filename": "GOPR0413.JPG",
