@@ -22,7 +22,7 @@ from geopy import Point as geopy_pt
 from geopy.distance import geodesic
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 from shapely import centroid
-from shapely.geometry import LineString, MultiPoint, Point, Polygon, box
+from shapely.geometry import LineString, MultiPoint, Point, Polygon
 from shapely.ops import voronoi_diagram
 
 from photo_meta import photo_meta
@@ -31,6 +31,10 @@ from photo_meta_day_2 import photo_meta as photo_meta_day_2
 photo_meta = photo_meta + photo_meta_day_2
 
 plt.rcParams["svg.fonttype"] = "none"
+TEXT_COLOUR = "white"
+X_OFFSET = 0.0001
+X_OFFSET_SMALL = 0.0002
+Y_OFFSET = 0.000015
 
 
 # %% depth data
@@ -50,12 +54,12 @@ def get_depth_data_from_fit_file(file_name="ScubaDiving_2024-03-08T09_29_45.fit"
 
 
 def make_depth_df(fit_files: list[str]) -> pd.DataFrame:
-    depth_dataframes = []
+    depth_dataframes: list[pd.DataFrame] = []
     for fit_file in fit_files:
         raw = get_depth_data_from_fit_file(file_name=fit_file)
-        depth_df = pd.DataFrame(raw).set_index("dt")
-        depth_df["source_file"] = fit_file
-        depth_dataframes.append(depth_df)
+        this_depth_df = pd.DataFrame(raw).set_index("dt")
+        this_depth_df["source_file"] = fit_file
+        depth_dataframes.append(this_depth_df)
 
     depth_dataframe = pd.concat(depth_dataframes)
     return depth_dataframe
@@ -81,7 +85,11 @@ depth_df_2 = make_depth_df(
     ]
 )
 depth_df_2.plot(
-    title="Depth of the dives\n 1 around bottom of the wall/desert interface,\n2 across to the other side",
+    title=(
+        "Depth of the dives\n "
+        "1 around bottom of the wall/desert interface,\n"
+        "2 across to the other side"
+    ),
     ylabel="Depth (m)",
     xlabel="Time (UTC)",
 )
@@ -350,7 +358,7 @@ all_gdf = gp.GeoDataFrame(all_df)
 
 # %%
 def make_marker_text(row):
-    filename = row.filename.replace(".JPG", "")
+    # filename = row.filename.replace(".JPG", "")
     if row.marker_type == "numbered":
         return (
             f"""{row.marker_number if row.marker_number else "-"}"""  # ({filename})"""
@@ -541,7 +549,7 @@ filtered_data.append(bottom_gdf.iloc[-1])
 filtered_gdf = gp.GeoDataFrame(pd.concat(filtered_data, axis=1).transpose())
 
 # Load in the click data
-json_df = pd.read_json("click_conditions.json")
+json_df: pd.DataFrame = pd.read_json("click_conditions.json")
 click_gdf = gp.GeoDataFrame(
     geometry=json_df.apply(lambda row: Point(row.lon, row.lat), axis=1)
 )
