@@ -120,10 +120,6 @@ recorded_path = gp.read_file(fp, layer="tracks")
 ax = recorded_path.plot()
 
 
-starting_point = geopy_pt(-33.91585, 151.2650)
-scalebar_distances = [0, 5, 10, 15, 20, 50, 100]
-
-
 def move_pt(starting_point, meters, bearing):
     d = geodesic(meters=meters)
     new_point = d.destination(point=starting_point, bearing=bearing)
@@ -174,6 +170,8 @@ def draw_scale_bar(starting_point, scalebar_distances, thickness=5):
     return {"scalebar_lines": scalebar_lines, "number_points": number_points}
 
 
+starting_point = geopy_pt(-33.91585, 151.2650)
+scalebar_distances = [0, 5, 10, 15, 20, 50, 100]
 scalebar_lines = draw_scale_bar(starting_point, scalebar_distances)
 scale_gdf = gp.GeoDataFrame(geometry=scalebar_lines["scalebar_lines"])
 scale_gdf.plot(ax=ax, color="red")
@@ -389,11 +387,6 @@ uni_marker_df = (
 
 
 # %%
-X_OFFSET = 0.0001
-X_OFFSET_SMALL = 0.0002
-Y_OFFSET = 0.000015
-
-
 def add_numbered_marker_label(row):
     """Add a numbered marker to the map for the major points on the trail."""
     ax.annotate(
@@ -402,10 +395,12 @@ def add_numbered_marker_label(row):
         xytext=[row.geometry.x + X_OFFSET, row.geometry.y],
         xycoords="data",
         size="small",
-        color="k",
+        color=TEXT_COLOUR,
         ha="center",
         va="center",
-        arrowprops=dict(arrowstyle="->", connectionstyle="arc3,rad=-0.05", color="k"),
+        arrowprops=dict(
+            arrowstyle="->", connectionstyle="arc3,rad=-0.05", color=TEXT_COLOUR
+        ),
         zorder=3,
     )
 
@@ -418,10 +413,12 @@ def add_note_label(row):
         xytext=[row.geometry.x + X_OFFSET, row.geometry.y + X_OFFSET],
         xycoords="data",
         size="small",
-        color="k",
+        color=TEXT_COLOUR,
         ha="center",
         va="center",
-        arrowprops=dict(arrowstyle="->", connectionstyle="arc3,rad=-0.05", color="k"),
+        arrowprops=dict(
+            arrowstyle="->", connectionstyle="arc3,rad=-0.05", color=TEXT_COLOUR
+        ),
         zorder=3,
     )
 
@@ -452,10 +449,12 @@ def add_intermediate_label(row):
         xytext=[row.geometry.x - X_OFFSET_SMALL, row.geometry.y - Y_OFFSET],
         xycoords="data",
         size=6,
-        color="k",
+        color=TEXT_COLOUR,
         ha="left",
         va="center",
-        arrowprops=dict(arrowstyle="->", connectionstyle="arc3,rad=-0.05", color="k"),
+        arrowprops=dict(
+            arrowstyle="->", connectionstyle="arc3,rad=-0.05", color=TEXT_COLOUR
+        ),
         alpha=0.6,
         zorder=3,
     )
@@ -486,6 +485,8 @@ def draw_shortcut_arrow(all_gdf, ax, from_marker_number=3, to_marker_number=14):
         transform_rotates_text=True,
         rotation=angle,
         rotation_mode="anchor",
+        color=TEXT_COLOUR,
+        zorder=3,
     )
 
     ax.annotate(
@@ -494,7 +495,7 @@ def draw_shortcut_arrow(all_gdf, ax, from_marker_number=3, to_marker_number=14):
         xytext=[point_a.x, point_a.y],
         xycoords="data",
         size="small",
-        color="k",
+        color=TEXT_COLOUR,
         ha="center",
         va="bottom",
         arrowprops=dict(
@@ -504,8 +505,43 @@ def draw_shortcut_arrow(all_gdf, ax, from_marker_number=3, to_marker_number=14):
             linewidth=0.8,
             shrinkA=10,
             shrinkB=10,
+            color=TEXT_COLOUR,
         ),
         zorder=3,
+    )
+
+
+def draw_north_arrow(ax, n_bottom_pt):
+    n_top_pt = move_pt(n_bottom_pt, 50, 0)
+    # This seems like it's shifting across by 4m, which is pretty strange
+    n_mid_pt = move_pt(n_bottom_pt, 25, 0)
+    e_pt = move_pt(n_mid_pt, 20, 90)
+    w_pt = move_pt(n_mid_pt, 20, 270)
+    n_arrowprops = {"arrowstyle": "<|-", "lw": 2, "ec": TEXT_COLOUR}
+
+    ax.annotate(
+        "N",
+        xy=(n_bottom_pt.longitude, n_bottom_pt.latitude),
+        xytext=(n_top_pt.longitude, n_top_pt.latitude),
+        va="center",
+        arrowprops=n_arrowprops,
+        color=TEXT_COLOUR,
+    )
+    ax.annotate(
+        "E",
+        xy=(n_mid_pt.longitude, n_mid_pt.latitude),
+        xytext=(e_pt.longitude, e_pt.latitude),
+        va="center",
+        arrowprops=n_arrowprops,
+        color=TEXT_COLOUR,
+    )
+    ax.annotate(
+        "W",
+        xy=(n_mid_pt.longitude, n_mid_pt.latitude),
+        xytext=(w_pt.longitude, w_pt.latitude),
+        va="center",
+        arrowprops=n_arrowprops,
+        color=TEXT_COLOUR,
     )
 
 
@@ -515,7 +551,12 @@ fig, ax = plt.subplots(figsize=(15, 9))
 
 # plot the swum paths and add a colourbar
 cax = all_gdf.plot(
-    column="depth", cmap="rainbow", ax=ax, zorder=2, gid="depth_gps_trace"
+    column="depth",
+    cmap="rainbow",
+    ax=ax,
+    zorder=2,
+    gid="depth_gps_trace",
+    markersize=2,
 )
 divider = make_axes_locatable(ax)
 cax_cb = divider.append_axes("right", size="2%", pad=0.05)
@@ -633,7 +674,7 @@ intermediate_df.plot(ax=ax, marker="2", zorder=3, gid="intermediate_markers")
 uni_marker_df.plot(ax=ax, marker="$\circ$", zorder=3, gid="numbered_markers")
 uni_marker_df.apply(add_numbered_marker_label, axis=1)
 uni_marker_df.apply(add_tolerance_circle, axis=1)
-intermediate_df.apply(add_intermediate_label, axis=1)
+# intermediate_df.apply(add_intermediate_label, axis=1)
 all_gdf[all_gdf.note.notnull()].apply(add_note_label, axis=1)
 
 
@@ -643,6 +684,18 @@ draw_shortcut_arrow(all_gdf, ax, from_marker_number=5, to_marker_number=14)
 draw_shortcut_arrow(all_gdf, ax, from_marker_number=11, to_marker_number=16)
 draw_shortcut_arrow(all_gdf, ax, from_marker_number=23, to_marker_number=5)
 
+# Add scalebar
+starting_point = geopy_pt(-33.9175, 151.265)
+scalebar_distances = [0, 5, 10, 15, 20, 50, 100]
+scalebar_lines = draw_scale_bar(starting_point, scalebar_distances)
+scale_gdf = gp.GeoDataFrame(geometry=scalebar_lines["scalebar_lines"])
+scale_gdf.plot(ax=ax, color=TEXT_COLOUR)
+for i, p in enumerate(scalebar_lines["number_points"]):
+    ax.text(p.x, p.y, scalebar_distances[i], ha="center", fontsize=5, color=TEXT_COLOUR)
+
+# Add north arrow
+n_bottom_pt = geopy_pt(-33.9175, 151.267)
+draw_north_arrow(ax, n_bottom_pt)
 
 markers = [
     {"description": "numbered", "marker": "$\circ$", "colour": "orange"},
@@ -666,7 +719,7 @@ tol_circle = plt.Circle(
     [], [], color="r", fill=False, alpha=0.4, linestyle="-.", label="Tolerance area"
 )
 legend_handles.append(tol_circle)
-ax.legend(handles=legend_handles)
+ax.legend(handles=legend_handles, loc="lower left")
 ax.set_title("Gordon's bay trail, coloured by depth")
 plt.tight_layout()
 plt.savefig("docs/marker_graph.png")
