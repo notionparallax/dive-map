@@ -302,6 +302,7 @@ photo_meta = [
         "marker_type": "",
         "marker_number": "",
         "bottom_condition": "rocky",
+        "note": "Tire",
     },
     {
         "filename": "GOPR0316.JPG",
