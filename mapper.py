@@ -728,6 +728,26 @@ print(all_gdf[all_gdf.source == "photo"].shape[0], "photos")
 
 
 # %% folium map time
+"""
+Decimal Places   Aprox. Distance    Say What?
+1                10 kilometers      6.2 miles
+2                1 kilometer        0.62 miles
+3                100 meters         About 328 feet
+4                10 meters          About 33 feet
+5                1 meter            About 3 feet
+6                10 centimeters     About 4 inches
+7                1.0 centimeter     About 1/2 an inch
+8                1.0 millimeter     The width of paperclip wire.
+9                0.1 millimeter     The width of a strand of hair.
+10               10 microns         A speck of pollen.
+11               1.0 micron         A piece of cigarette smoke.
+12               0.1 micron         You're doing virus-level mapping at this point.
+13               10 nanometers      Does it matter how big this is?
+14               1.0 nanometer      Your fingernail grows about this far in one second.
+15               0.1 nanometer      An atom. An atom! What are you mapping?
+
+from: https://gis.stackexchange.com/questions/8650/measuring-accuracy-of-latitude-and-longitude
+"""
 gordons_coords = [-33.91611178427029, 151.2636983190627]
 
 
