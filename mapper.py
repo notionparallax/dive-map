@@ -514,15 +514,22 @@ def draw_shortcut_arrow(all_gdf, ax, from_marker_number=3, to_marker_number=14):
 
 def draw_north_arrow(ax, n_bottom_pt):
     n_top_pt = move_pt(n_bottom_pt, 50, 0)
+    s_pt = move_pt(n_top_pt, 50, 180)
     # This seems like it's shifting across by 4m, which is pretty strange
     n_mid_pt = move_pt(n_bottom_pt, 25, 0)
     e_pt = move_pt(n_mid_pt, 20, 90)
     w_pt = move_pt(n_mid_pt, 20, 270)
     n_arrowprops = {"arrowstyle": "<|-", "lw": 2, "ec": TEXT_COLOUR}
 
+    # print(
+    #     f"""drawing north arrow
+    #       {n_bottom_pt}
+    #       {n_top_pt}
+    #       {s_pt}"""
+    # )
     ax.annotate(
         "N",
-        xy=(n_bottom_pt.longitude, n_bottom_pt.latitude),
+        xy=(s_pt.longitude, s_pt.latitude),
         xytext=(n_top_pt.longitude, n_top_pt.latitude),
         va="center",
         arrowprops=n_arrowprops,
