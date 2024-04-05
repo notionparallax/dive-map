@@ -596,6 +596,7 @@ for i in range(len(bottom_gdf) - 1):
 filtered_data.append(bottom_gdf.iloc[-1])
 # Convert the list to a GeoDataFrame
 filtered_gdf = gp.GeoDataFrame(pd.concat(filtered_data, axis=1).transpose())
+filtered_gdf.set_crs(CRS, inplace=True)
 
 # Load in the click data
 json_df: pd.DataFrame = pd.read_json("click_conditions.json")
@@ -646,23 +647,36 @@ for condition, color in colors.items():
     patch = mpatches.Patch(color=color, label=condition)
     legend_handles.append(patch)
 
-## I can't get this to work any more :(
+plot_voronoi = False
+if plot_voronoi:
+    # TODO: The indexing between the cells and the colours is off.
+    result_rows = []
+
+    for point in filtered_gdf["geometry"]:
+        # Find the polygon that contains the point
+        matching_row = voronoi_gdf[voronoi_gdf.contains(point)].iloc[0]
+        matching_polygon = matching_row.geometry
+        result_rows.append(
+            {
+                "point": point,
+                "polygon": matching_polygon,
+                "bottom_condition": matching_row.bottom_condition,
+                "colour": matching_row.colour,
+            }
+        )
+
+    # Create a new GeoDataFrame
+    v_and_p_gdf = gp.GeoDataFrame(result_rows, geometry="polygon")
+
+    v_and_p_gdf.plot(
+        ax=ax,
+        color=v_and_p_gdf.colour,
+        edgecolor=None,
+        alpha=0.5,
+        zorder=1,
+    )
+
 buffer_radius = 0.0003  # Set this to your desired radius
-# buffers = Polygon(MultiPoint(filtered_gdf.geometry.values).convex_hull).buffer(
-#     buffer_radius
-# )
-# buffer_gdf = gp.GeoDataFrame(geometry=[buffers])
-# clipped_gdf = overlay(filtered_gdf, voronoi_gdf, how="intersection")
-# TODO: The indexing between the cells and the colours is off. This needs to be
-# pulled back into line, and then the voronoi plot uncommented.
-# voronoi_gdf.plot(
-#     ax=ax,
-#     edgecolor=None,
-#     # column="bottom_condition",
-#     color=voronoi_gdf["colour"],
-#     zorder=1,
-#     alpha=0.9,
-# )
 bounds = (
     Polygon(MultiPoint(filtered_gdf.geometry.values).envelope)
     .buffer(buffer_radius)
