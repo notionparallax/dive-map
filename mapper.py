@@ -32,6 +32,7 @@ photo_meta = photo_meta + photo_meta_day_2
 
 plt.rcParams["svg.fonttype"] = "none"
 TEXT_COLOUR = "white"
+CRS = "EPSG:4326"
 X_OFFSET = 0.0001
 X_OFFSET_SMALL = 0.0002
 Y_OFFSET = 0.000015
@@ -220,7 +221,7 @@ def get_gps_data_single_dive(
 def make_dive_df(dives_lon_lat_time):
     dives_df = pd.DataFrame(dives_lon_lat_time).set_index("dt")
     dives_df["geometry"] = dives_df.apply(lambda row: Point(row.lon, row.lat), axis=1)
-    dives_gdf = gp.GeoDataFrame(dives_df, crs="EPSG:4326")
+    dives_gdf = gp.GeoDataFrame(dives_df, crs=CRS)
     return dives_gdf
 
 
