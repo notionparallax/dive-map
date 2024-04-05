@@ -869,7 +869,7 @@ for index, row in intermediate_df.iterrows():
         weight=1,
         fill_opacity=0.1,
         opacity=1,
-        # tooltip=row.marker_text,
+        # tooltip=row.filename,
     ).add_to(intermediate_markers)
 
 folium.LayerControl().add_to(f_map)
