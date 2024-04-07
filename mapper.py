@@ -400,7 +400,7 @@ def add_numbered_marker_label(row):
         ha="center",
         va="center",
         arrowprops=dict(
-            arrowstyle="->", connectionstyle="arc3,rad=-0.05", color=TEXT_COLOUR
+            arrowstyle="-|>", connectionstyle="arc3,rad=-0.05", color=TEXT_COLOUR
         ),
         zorder=3,
     )
