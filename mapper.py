@@ -385,6 +385,8 @@ uni_marker_df = (
     )
     .sort_index()
 )
+# TODO: mix in the other verts here
+chain_line_df = uni_marker_df.copy(deep=True)
 
 
 # %%
@@ -698,6 +700,10 @@ uni_marker_df.apply(add_numbered_marker_label, axis=1)
 uni_marker_df.apply(add_tolerance_circle, axis=1)
 # intermediate_df.apply(add_intermediate_label, axis=1)
 all_gdf[all_gdf.note.notnull()].apply(add_note_label, axis=1)
+
+# Plot the chain line.
+# TODO: Mix in a few of the intermediate markers
+gp.GeoDataFrame(geometry=[LineString(chain_line_df.geometry)]).plot(ax=ax)
 
 
 # Add the shortcut arrows
