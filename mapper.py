@@ -17,6 +17,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import pytz
+import scipy
 from dateutil import tz
 from geopy import Point as geopy_pt
 from geopy.distance import geodesic
@@ -356,6 +357,23 @@ all_gdf = gp.GeoDataFrame(all_df)
 
 
 # %%
+def prep_for_contour(df):
+    x = [p.x for p in df.geometry]
+    y = [p.y for p in df.geometry]
+    z = list(df.depth)
+
+    # Create grid
+    gridpoints = 500
+    xi = np.linspace(min(x), max(x), gridpoints)
+    yi = np.linspace(min(y), max(y), gridpoints)
+    xi, yi = np.meshgrid(xi, yi)
+
+    # Interpolate z values
+    zi = scipy.interpolate.griddata((x, y), z, (xi, yi), method="cubic")
+    return xi, yi, zi
+
+
+# %%
 def make_marker_text(row):
     # filename = row.filename.replace(".JPG", "")
     if row.marker_type == "numbered":
@@ -386,7 +404,7 @@ uni_marker_df = (
     .sort_index()
 )
 # TODO: mix in the other verts here
-chain_line_df = uni_marker_df.copy(deep=True)
+# chain_line_df = uni_marker_df.copy(deep=True)
 
 
 # %%
@@ -556,7 +574,7 @@ def draw_north_arrow(ax, n_bottom_pt):
 
 
 # %%
-fig, ax = plt.subplots(figsize=(15, 9))
+fig, ax = plt.subplots(figsize=(30, 18))
 
 
 # plot the swum paths and add a colourbar
@@ -566,7 +584,7 @@ cax = all_gdf.plot(
     ax=ax,
     zorder=2,
     gid="depth_gps_trace",
-    markersize=2,
+    markersize=1,
 )
 divider = make_axes_locatable(ax)
 cax_cb = divider.append_axes("right", size="2%", pad=0.05)
@@ -688,6 +706,19 @@ ax.set_xlim([bounds[0], bounds[2]])
 ax.set_ylim([bounds[1], bounds[3]])
 
 ## end voronoi
+
+# Contour map
+contour_gdf = all_gdf.copy(deep=True)
+shore_gdf = click_gdf[
+    (click_gdf.bottom_condition == "shore_rocks")
+    | (click_gdf.bottom_condition == "beach")
+]
+shore_gdf["depth"] = 0
+contour_gdf = pd.concat([contour_gdf, shore_gdf])
+x, y, z = prep_for_contour(contour_gdf)
+CS = ax.contour(x, y, z, levels=14, colors="white", alpha=0.5)
+ax.clabel(CS, inline=1, fontsize=7)
+
 
 # Add context image
 cx.add_basemap(ax, crs=voronoi_gdf.crs, source=cx.providers.Esri.WorldImagery)
@@ -875,7 +906,7 @@ for index, row in intermediate_df.iterrows():
         weight=1,
         fill_opacity=0.1,
         opacity=1,
-        # tooltip=row.filename,
+        tooltip=row.filename,
     ).add_to(intermediate_markers)
 
 folium.LayerControl().add_to(f_map)
