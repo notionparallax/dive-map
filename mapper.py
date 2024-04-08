@@ -481,7 +481,7 @@ def draw_shortcut_arrow(all_gdf, ax, from_marker_number=3, to_marker_number=14):
     ax.text(
         midpoint.x,
         midpoint.y,
-        f"{int(angle%360)}º",
+        f"{int((angle+90)%360)}º",
         ha="center",
         va="center",
         size="small",
