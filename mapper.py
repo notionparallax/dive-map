@@ -357,15 +357,15 @@ all_gdf = gp.GeoDataFrame(all_df)
 
 
 # %%
-def prep_for_contour(df):
+def prep_for_contour(df, gridpoints_x=100, gridpoints_y=70):
     x = [p.x for p in df.geometry]
     y = [p.y for p in df.geometry]
     z = list(df.depth)
 
     # Create grid
-    gridpoints = 500
-    xi = np.linspace(min(x), max(x), gridpoints)
-    yi = np.linspace(min(y), max(y), gridpoints)
+
+    xi = np.linspace(min(x), max(x), gridpoints_x)
+    yi = np.linspace(min(y), max(y), gridpoints_y)
     xi, yi = np.meshgrid(xi, yi)
 
     # Interpolate z values
@@ -404,7 +404,7 @@ uni_marker_df = (
     .sort_index()
 )
 # TODO: mix in the other verts here
-# chain_line_df = uni_marker_df.copy(deep=True)
+chain_line_df = uni_marker_df.copy(deep=True)
 
 
 # %%
@@ -715,8 +715,11 @@ shore_gdf = click_gdf[
 ]
 shore_gdf["depth"] = 0
 contour_gdf = pd.concat([contour_gdf, shore_gdf])
-x, y, z = prep_for_contour(contour_gdf)
-CS = ax.contour(x, y, z, levels=14, colors="white", alpha=0.5)
+x, y, z = prep_for_contour(contour_gdf, gridpoints_x=170, gridpoints_y=70)
+SHOW_CONTOUR_GRID = True
+if SHOW_CONTOUR_GRID:
+    ax.scatter(x, y, s=1)
+CS = ax.contour(x, y, z, levels=list(range(-15, 1, 2)), colors="white", alpha=0.5)
 ax.clabel(CS, inline=1, fontsize=7)
 
 
@@ -913,4 +916,26 @@ folium.LayerControl().add_to(f_map)
 f_map.save("docs/gordons_map.html")
 
 f_map
+# %%
+import mplcursors
+
+# Create some data
+x = np.linspace(0, 10, 100)
+y = np.sin(x)
+
+# Create a figure and plot the data
+fig, ax = plt.subplots()
+ax.plot(x, y, "o")
+
+# Use mplcursors to interactively display the x,y coordinates
+cursor = mplcursors.cursor(ax, hover=True)
+
+
+@cursor.connect("add")
+def on_add(sel):
+    sel.annotation.set_text(f"Point: ({sel.target[0]:.1f}, {sel.target[1]:.1f})")
+
+
+plt.show()
+
 # %%
