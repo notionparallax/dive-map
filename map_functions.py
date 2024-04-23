@@ -21,7 +21,7 @@ import pytz
 import scipy
 from dateutil import tz
 from geopy import Point as geopy_pt
-from geopy.distance import geodesic
+from geopy.distance import geodesic, great_circle
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 from shapely import centroid
 from shapely.geometry import LineString, MultiPoint, Point, Polygon
@@ -77,7 +77,7 @@ def plot_gps_trace(fp: str = "20240308-090746 - Gordons.gpx"):
     return fp
 
 
-def move_pt(starting_point, meters, bearing):
+def move_pt(starting_point, meters: float, bearing: float):
     d = geodesic(meters=meters)
     new_point = d.destination(point=starting_point, bearing=bearing)
     return new_point
@@ -226,24 +226,25 @@ def make_marker_text(row):
 # %%
 def add_numbered_marker_label(row, ax):
     """Add a numbered marker to the map for the major points on the trail."""
-    ax.annotate(
-        text=row.marker_text,
-        xy=[row.geometry.x, row.geometry.y],
-        xytext=[row.geometry.x + X_OFFSET, row.geometry.y],
-        xycoords="data",
-        size="small",
-        color=TEXT_COLOUR,
-        ha="center",
-        va="center",
-        arrowprops=dict(
-            arrowstyle="-", connectionstyle="arc3,rad=-0.05", color=TEXT_COLOUR
-        ),
-        zorder=3,
-    )
+    if row.marker_text != "":
+        ax.annotate(
+            text=row.marker_text,
+            xy=[row.geometry.x, row.geometry.y],
+            xytext=[row.geometry.x + X_OFFSET, row.geometry.y],
+            xycoords="data",
+            size="small",
+            color=TEXT_COLOUR,
+            ha="center",
+            va="center",
+            arrowprops=dict(
+                arrowstyle="-", connectionstyle="arc3,rad=-0.05", color=TEXT_COLOUR
+            ),
+            zorder=3,
+        )
 
 
 def add_note_label(row, ax):
-    """Add a note to th map for something notable."""
+    """Add a note to the map for something notable."""
     ax.annotate(
         text=row.note,
         xy=[row.geometry.x, row.geometry.y],
@@ -260,21 +261,44 @@ def add_note_label(row, ax):
     )
 
 
+def measure_line_string(the_line_string: LineString) -> float:
+    """measure_line_string Returns the length, in metres, of a line string.
+
+    Args:
+        the_line_string (LineString): The line string that you want to measure
+
+    Returns:
+        float: Total distance in metres
+    """
+    # Initialize a variable to hold the total length
+    total_length = 0
+
+    # Iterate over the points in the LineString
+    for i in range(len(the_line_string.coords) - 1):
+        # Calculate the distance between each pair of points
+        point1 = tuple(reversed(the_line_string.coords[i]))
+        point2 = tuple(reversed(the_line_string.coords[i + 1]))
+        distance = great_circle(point1, point2).meters
+        total_length += distance
+    return total_length
+
+
 def add_tolerance_circle(row, ax):
     """Add a circle to each numbered marker to indicate how much uncertainty there is for a given worst case angle."""
-    worst_case_cord_angle = 35
-    ax.add_patch(
-        plt.Circle(
-            (row.geometry.x, row.geometry.y),
-            (90 / 10_000000)
-            * (math.tan(math.radians(worst_case_cord_angle)) * abs(row.depth)),
-            color="r",
-            fill=False,
-            alpha=0.4,
-            linestyle="-.",
-            zorder=4,
+    if row.marker_text != "":
+        worst_case_cord_angle = 35
+        ax.add_patch(
+            plt.Circle(
+                (row.geometry.x, row.geometry.y),
+                (90 / 10_000000)
+                * (math.tan(math.radians(worst_case_cord_angle)) * abs(row.depth)),
+                color="r",
+                fill=False,
+                alpha=0.4,
+                linestyle="-.",
+                zorder=4,
+            )
         )
-    )
 
 
 def add_intermediate_label(row, ax):
