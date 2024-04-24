@@ -143,3 +143,18 @@ display todos (things to do before this goes to illustrator)
 - [ ] turn off axis ticks and tick labels
 - [ ] make sure the rest of the bottom condition markers are plotting (potentially fo an n^2 loop to check for inclusion so colour the cells properly?)
 - [ ] check that `plt.rcParams['svg.fonttype'] = 'none'` is actually outputting text not curves
+
+# WIP map
+
+![](docs\Gordons_map_wip.png)
+
+Some things to consider:
+- Colours are there for my working brain, it'll simplify to one colour for the finished map
+- There will only be one background image on the finished one. These are there for me to turn on and off so I can see how it relates to other maps
+- The contour lines are super chaotic in the areas without much depth data. More depth measurements will calm that down.
+- The bommie is a total mystery
+- It's 1:1000 at A2, but that's not a practical size to have at a dive site, so it's 1:2000 at A3 for now
+- The chain length is currently 490, that doesn't visit #2 or #4, and it doesn't go back via 3, 2 and 1, which should bring it up to somewhere near Jöelle Devis's measured distance of 616m.
+- I have to submit this map at some point, but there's still a lot that I can do to keep adding to this, so I'm going to keep going even after I've submitted it.
+- I still don't know what kind of seaweed I'm marking up as _low_, I need a seaweed expert.
+- There's a higher res output [here](docs\Gordons_map_wip@2x.png). Probably still not print quality though.
