@@ -196,7 +196,20 @@ def naieve_ffill(df, column):
 
 
 # %%
-def prep_for_contour(df, gridpoints_x=100, gridpoints_y=70):
+def prep_for_contour(
+    df, gridpoints_x: int = 100, gridpoints_y: int = 70, method: str = "cubic"
+):
+    """prep_for_contour _summary_
+
+    Args:
+        df (_type_): _description_
+        gridpoints_x (int, optional): Number of points in the horizontal direction. Defaults to 100.
+        gridpoints_y (int, optional): Number of points in the vertical direction. Defaults to 70.
+        method (str, optional): one of ‘linear’, ‘nearest’, ‘cubic’. Defaults to "cubic".
+
+    Returns:
+        _type_: _description_
+    """
     x = [p.x for p in df.geometry]
     y = [p.y for p in df.geometry]
     z = list(df.depth)
@@ -208,7 +221,7 @@ def prep_for_contour(df, gridpoints_x=100, gridpoints_y=70):
     xi, yi = np.meshgrid(xi, yi)
 
     # Interpolate z values
-    zi = scipy.interpolate.griddata((x, y), z, (xi, yi), method="cubic")
+    zi = scipy.interpolate.griddata((x, y), z, (xi, yi), method=method)
     return xi, yi, zi
 
 
