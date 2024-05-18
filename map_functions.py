@@ -173,15 +173,15 @@ def make_dive_df(dives_lon_lat_time):
     return dives_gdf
 
 
-def get_photo_data():
+def get_photo_data(photo_meta_data):
     sydney_tz = tz.gettz("Australia/Sydney")
-    for photo in photo_meta:
+    for photo in photo_meta_data:
         naive_dt = photo["datetime"]
         sydney_dt = naive_dt.replace(tzinfo=sydney_tz)
         utc_dt = sydney_dt.astimezone(tz.tzutc())
         photo["dt"] = utc_dt
 
-    photo_df = pd.DataFrame(photo_meta).set_index("dt")
+    photo_df = pd.DataFrame(photo_meta_data).set_index("dt")
     return photo_df
 
 
