@@ -344,6 +344,7 @@ def draw_shortcut_arrow(
     to_marker_number=14,
     text_colour="red",
     arrow_colour="blue",
+    text_size=7,
 ):
     point_a = MultiPoint(
         all_gdf[all_gdf.marker_number == from_marker_number].geometry
@@ -365,7 +366,7 @@ def draw_shortcut_arrow(
         f"{int( (90 - angle) % 360)}º",
         ha="center",
         va="center",
-        size="small",
+        size=text_size,
         transform_rotates_text=True,
         rotation=angle,
         rotation_mode="anchor",
@@ -378,7 +379,7 @@ def draw_shortcut_arrow(
         xy=[point_b.x, point_b.y],
         xytext=[point_a.x, point_a.y],
         xycoords="data",
-        size="small",
+        size=text_size,
         color=text_colour,
         ha="center",
         va="bottom",

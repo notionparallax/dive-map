@@ -63,7 +63,8 @@ photo_meta = [
         "datetime": datetime.datetime(2024, 3, 8, 9, 36, 7),
         "filename": "GOPR0106.JPG",
         "marker_type": "intermediate",
-        "marker_number": "",
+        "chain_vertex": True,
+        "marker_number": 5.1,
         "bottom_condition": "rocky",
     },
     {
@@ -446,7 +447,8 @@ photo_meta = [
         "datetime": datetime.datetime(2024, 3, 8, 9, 55, 18),
         "filename": "GOPR0159.JPG",
         "marker_type": "intermediate",
-        "marker_number": "",
+        "chain_vertex": True,
+        "marker_number": 10.1,
         "bottom_condition": "unspecified",
     },
     {
