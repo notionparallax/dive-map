@@ -261,7 +261,10 @@ def add_note_label(row, ax):
     ax.annotate(
         text=row.note,
         xy=[row.geometry.x, row.geometry.y],
-        xytext=[row.geometry.x + X_OFFSET, row.geometry.y + X_OFFSET],
+        xytext=[
+            row.geometry.x + X_OFFSET * 0.5,
+            row.geometry.y + X_OFFSET * 0.5,
+        ],
         xycoords="data",
         size="small",
         color=TEXT_COLOUR,
