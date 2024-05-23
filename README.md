@@ -124,21 +124,25 @@ Things to do on the next dives:
 
 - [ ] Swim around the bay with the gps, to get a perimeter. Probably as a snorkle and then I can sketch/photograph some features for the actual map drawing part
 - [ ] Visit the bommie drawn off marker 14 on the 1990 map, and swim a perimeter on it
-- [ ] try to find marker 2. Marker 3 doesn't have a number on it, as far as I can tell, so maybe 2 isn't there any more? Just needs a bit of searching.
+- [x] try to find marker 2. Marker 3 doesn't have a number on it, as far as I can tell, so maybe 2 isn't there any more? Just needs a bit of searching.
 - [ ] Map the intermediate markers more carefully
 - [ ] Get some more perimeters of kelp beds etc.
 - [ ] Visit the cave at 12 (in 1990 numbers)
 - [ ] draw the wall, so that I can draw it onto the map in a useful way
+- [ ] do some zigzags over the wall to get better defined contours over the top of the wall
 
 Things to do the the map:
 - [ ] Work out the numbering. When did there become 25 points? This might be a question for the scuba club?
 - [x] add the same shortcut arrows and headings, as a homage to the 1990 map
 - [x] add a scale bar and north arrow
+- [ ] Import the map as an svg instead of a png
 - [ ] Actually draw my map!
+- [ ] Make tire etc have shorter arrows
+- [ ] Hide intermediate markers
 
 display todos (things to do before this goes to illustrator)
 
-- [ ] change swim traces from dots to polylines
+- [x] change swim traces from dots to polylines
 - [x] remove intermediate photo labels
 - [ ] turn off axis ticks and tick labels
 - [ ] make sure the rest of the bottom condition markers are plotting (potentially fo an n^2 loop to check for inclusion so colour the cells properly?)
@@ -151,7 +155,7 @@ display todos (things to do before this goes to illustrator)
 Some things to consider:
 - Colours are there for my working brain, it'll simplify to one colour for the finished map
 - There will only be one background image on the finished one. These are there for me to turn on and off so I can see how it relates to other maps
-- The contour lines are super chaotic in the areas without much depth data. More depth measurements will calm that down.
+- (_fixed by changing interpolation to linear_)The contour lines are super chaotic in the areas without much depth data. More depth measurements will calm that down.
 - The bommie is a total mystery
 - It's 1:1000 at A2, but that's not a practical size to have at a dive site, so it's 1:2000 at A3 for now
 - The chain length is currently 490, that doesn't visit #2 or #4, and it doesn't go back via 3, 2 and 1, which should bring it up to somewhere near Jöelle Devis's measured distance of 616m.
