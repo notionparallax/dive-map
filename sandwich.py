@@ -9,7 +9,7 @@ win.setBackground("powderblue")
 # Container for buttons
 # When you make a new button, append it to this this list.
 # Then later on, when you're checking for clicks, you can loop through this list
-BUTTON_LIST = []
+BUTTON_LIST: dict = []
 
 
 def main():
