@@ -590,6 +590,41 @@
   {
     "lat": -33.91853415903556,
     "lon": 151.2642679950625,
-    "condition": "protruding bommie"
+    "condition": "protruding_bommie"
+  },
+  {
+    "lat": -33.91642798645737,
+    "lon": 151.26689186559562,
+    "condition": "shore_rocks"
+  },
+  {
+    "lat": -33.91859147291055,
+    "lon": 151.26143088841187,
+    "condition": "shore_rocks"
+  },
+  {
+    "lat": -33.91773676877702,
+    "lon": 151.26287928118163,
+    "condition": "shore_rocks"
+  },
+  {
+    "lat": -33.91739844602235,
+    "lon": 151.26600137226313,
+    "condition": "made_up_bottom_1"
+  },
+  {
+    "lat": -33.918253153549536,
+    "lon": 151.2634800959602,
+    "condition": "made_up_bottom_2"
+  },
+  {
+    "lat": -33.919179077029035,
+    "lon": 151.2668811367603,
+    "condition": "made_up_bottom_3"
+  },
+  {
+    "lat": -33.919179077029035,
+    "lon": 151.26283636584031,
+    "condition": "made_up_bottom_3"
   }
 ]
