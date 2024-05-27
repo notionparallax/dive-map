@@ -1,3 +1,5 @@
+"""Metadata for photos taken on the dives with Shuwen."""
+
 import datetime
 
 photo_meta = [

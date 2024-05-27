@@ -1,7 +1,8 @@
 # %%
-from PIL import Image, ExifTags
-from datetime import datetime
 import os
+from datetime import datetime
+
+from PIL import ExifTags, Image
 
 # %%
 
@@ -28,20 +29,22 @@ print(
 
 # %%
 photos = []
-dir_name = "dive_photos_2"
+dir_name = "dive_photos_3"
 for f in os.listdir(dir_name):
-    img = Image.open(os.path.join(dir_name, f))
-    img_exif = img.getexif()
-    dt = datetime.strptime(img_exif[306], "%Y:%m:%d %H:%M:%S")
-    photos.append(
-        {
-            "filename": f,
-            "datetime": dt,
-            "marker_type": "",
-            "marker_number": "",
-            "bottom_condition": "unspecified",
-        }
-    )
+    if ".JPG" in f:
+        print(f)
+        img = Image.open(os.path.join(dir_name, f))
+        img_exif = img.getexif()
+        dt = datetime.strptime(img_exif[306], "%Y:%m:%d %H:%M:%S")
+        photos.append(
+            {
+                "filename": f,
+                "datetime": dt,
+                "marker_type": "",
+                "marker_number": "",
+                "bottom_condition": "unspecified",
+            }
+        )
 photos
 
 # %%
