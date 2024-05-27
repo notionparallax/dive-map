@@ -120,6 +120,18 @@ Shuwen and I dived on Saturday the 23rd of March, and did a couple of things:
 
 I got a lot more bottom condition data points. I've been struggling with the voronoi, but it's semi working and it shows that I'm going to need way more data if I'm going to take that approach to mapping! I think the old fashioned approach is probably the way to go to some extent.
 
+### Dive day 3
+
+Long dive, trying to do some zigzags over the west side, past the chain, that I'm provisionally calling the golf course. Turns out that I'm terrible at holding a compass bearing, so it was just a big loop.
+
+### Dive day 4
+
+An even longer dive (my longest so far at 1:40) trying to find the bommie. I didn't put my compass on, and I discovered that underwater I can't calibrate my watch compass (Thanks Sunnto, that's very helpful). But I did have a 100m line. So I swam in a "straight line due south" while reeling out the line. I ended up facing north west it turns out, but then I followed the arc of the line and found the bommie anyway, and got some good depth data for the sandy bit out in the ocean.
+
+The bommie was surgey, so I didn't spend long there. I tied off the line, and had a little swim. When I got back there was a stonefish camped out on the spool at the tie off; that was fun to move, those guys really don't care.
+
+---
+
 Things to do on the next dives:
 
 - [ ] Swim around the bay with the gps, to get a perimeter. Probably as a snorkle and then I can sketch/photograph some features for the actual map drawing part
@@ -132,13 +144,14 @@ Things to do on the next dives:
 - [ ] do some zigzags over the wall to get better defined contours over the top of the wall
 
 Things to do the the map:
+
 - [ ] Work out the numbering. When did there become 25 points? This might be a question for the scuba club?
 - [x] add the same shortcut arrows and headings, as a homage to the 1990 map
 - [x] add a scale bar and north arrow
-- [ ] Import the map as an svg instead of a png
+- [x] Import the map as an svg instead of a png
 - [ ] Actually draw my map!
-- [ ] Make tire etc have shorter arrows
-- [ ] Hide intermediate markers
+- [x] Make tire etc have shorter arrows
+- [x] Hide intermediate markers
 
 display todos (things to do before this goes to illustrator)
 
@@ -153,6 +166,7 @@ display todos (things to do before this goes to illustrator)
 ![](docs\Gordons_map_wip.png)
 
 Some things to consider:
+
 - Colours are there for my working brain, it'll simplify to one colour for the finished map
 - There will only be one background image on the finished one. These are there for me to turn on and off so I can see how it relates to other maps
 - (_fixed by changing interpolation to linear_)The contour lines are super chaotic in the areas without much depth data. More depth measurements will calm that down.
