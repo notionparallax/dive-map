@@ -973,7 +973,7 @@ photo_meta = [
         "marker_type": "",
         "marker_number": "",
         "bottom_condition": "rocky",
-        "note": "wobbegong cave",
+        "note": "Wobbegong cave",
     },
     {
         "filename": "GOPR0411.JPG",
