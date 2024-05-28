@@ -130,6 +130,12 @@ An even longer dive (my longest so far at 1:40) trying to find the bommie. I did
 
 The bommie was surgey, so I didn't spend long there. I tied off the line, and had a little swim. When I got back there was a stonefish camped out on the spool at the tie off; that was fun to move, those guys really don't care.
 
+Because I didn't do a full circumnavigation of the bommie, I was a bit concerned that it's be a mystery what it looked like. Then I had a bit of a breakthrough. If I sighted through the part that breaches the surface, I can work out an intersection:
+
+![](docs\eyeballing_small.PNG)
+
+That's given me enough context to be able to interpret the aerial photos enough to guess at the bommie's shape and extent.
+
 ---
 
 Things to do on the next dives:
