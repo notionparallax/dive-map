@@ -608,23 +608,23 @@
     "condition": "shore_rocks"
   },
   {
-    "lat": -33.91739844602235,
-    "lon": 151.26600137226313,
+    "lat": -33.9173516682,
+    "lon": 151.267,
     "condition": "made_up_bottom_1"
   },
   {
     "lat": -33.918253153549536,
-    "lon": 151.2634800959602,
+    "lon": 151.263,
     "condition": "made_up_bottom_2"
   },
   {
     "lat": -33.919179077029035,
-    "lon": 151.2668811367603,
+    "lon": 151.267,
     "condition": "made_up_bottom_3"
   },
   {
     "lat": -33.919179077029035,
-    "lon": 151.26283636584031,
+    "lon": 151.262,
     "condition": "made_up_bottom_3"
   }
 ]
