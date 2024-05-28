@@ -11,14 +11,17 @@ photo_meta = [
         "marker_number": 2,
         "bottom_condition": "low",
     }
-] + [
+] + []
+
+# Something is off here with the datetimes of these photos, they're attaching themselves to the wrong locations.
+baddly_formatted_times = [
     {
         "filename": "GOPR0460.JPG",
         "datetime": datetime.datetime(2024, 5, 17, 11, 55, 54),
         "marker_type": "",
         "marker_number": "",
         "bottom_condition": "unspecified",
-        "note": "Zoanthus Robustus",
+        # "note": "Zoanthus Robustus", # this is putting it near the end of the wall, but it shoudl be over on the far side of the gold course
     },
     {
         "filename": "GOPR0461.JPG",
@@ -40,6 +43,7 @@ photo_meta = [
         "marker_type": "",
         "marker_number": "",
         "bottom_condition": "rocky low kelp",
+        # "note": "Guitar Shark",
     },
     # {
     #     "filename": "GOPR0464.JPG",
