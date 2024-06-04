@@ -141,7 +141,7 @@ That's given me enough context to be able to interpret the aerial photos enough 
 Things to do on the next dives:
 
 - [ ] Swim around the bay with the gps, to get a perimeter. Probably as a snorkle and then I can sketch/photograph some features for the actual map drawing part
-- [ ] Visit the bommie drawn off marker 14 on the 1990 map, and swim a perimeter on it
+- [x] Visit the bommie drawn off marker 14 on the 1990 map, and swim a perimeter on it (partially done)
 - [x] try to find marker 2. Marker 3 doesn't have a number on it, as far as I can tell, so maybe 2 isn't there any more? Just needs a bit of searching.
 - [ ] Map the intermediate markers more carefully
 - [ ] Get some more perimeters of kelp beds etc.
@@ -155,7 +155,7 @@ Things to do the the map:
 - [x] add the same shortcut arrows and headings, as a homage to the 1990 map
 - [x] add a scale bar and north arrow
 - [x] Import the map as an svg instead of a png
-- [ ] Actually draw my map!
+- [x] Actually draw my map!
 - [x] Make tire etc have shorter arrows
 - [x] Hide intermediate markers
 
@@ -163,7 +163,7 @@ display todos (things to do before this goes to illustrator)
 
 - [x] change swim traces from dots to polylines
 - [x] remove intermediate photo labels
-- [ ] turn off axis ticks and tick labels
+- [x] turn off axis ticks and tick labels
 - [ ] make sure the rest of the bottom condition markers are plotting (potentially fo an n^2 loop to check for inclusion so colour the cells properly?)
 - [ ] check that `plt.rcParams['svg.fonttype'] = 'none'` is actually outputting text not curves
 
