@@ -1,4 +1,3 @@
-# (I need help with making the help page be able to be pressed multiple times)
 import random
 
 from graphics import *
@@ -9,10 +8,18 @@ win.setBackground("powderblue")
 # Container for buttons
 # When you make a new button, append it to this this list.
 # Then later on, when you're checking for clicks, you can loop through this list
-BUTTON_LIST: dict = []
+BUTTON_LIST = []
+CLICK_COUNTER = 0
 
 
-def main():
+def hi(win):
+    clickpoint = win.getMouse()
+
+
+def main_page(win):
+    global CLICK_COUNTER
+    win.setBackground("powderblue")
+
     # Title
     title = Text(Point(475, 30), "Make your own subway sandwich!")
     title.setSize(40)
@@ -21,50 +28,31 @@ def main():
     title.draw(win)
 
     # Sandwich
-    bread1 = make_bread(Point(300, 75), Point(700, 100), colour="navajowhite")
-    bread2 = make_bread(Point(300, 205), Point(700, 230), colour="navajowhite")
-
-    sauce = Rectangle(Point(285, 100), Point(715, 115))
-    sauce.setFill("darkgray")
-    sauce.draw(win)
-    vegetable1 = Rectangle(Point(275, 115), Point(725, 140))
-    vegetable1.setFill("darkgray")
-    vegetable1.draw(win)
-    vegetable2 = Rectangle(Point(265, 140), Point(735, 165))
-    vegetable2.setFill("darkgray")
-    vegetable2.draw(win)
-    cheese = Rectangle(Point(300, 165), Point(700, 180))
-    cheese.setFill("darkgray")
-    cheese.draw(win)
-    meat = Rectangle(Point(265, 180), Point(735, 205))
-    meat.setFill("darkgray")
-    meat.draw(win)
+    bread1 = make_rectangle(Point(300, 75), Point(700, 100), colour="navajowhite")
+    bread2 = make_rectangle(Point(300, 205), Point(700, 230), colour="navajowhite")
+    sauce = make_rectangle(Point(285, 115), Point(715, 100), colour="darkgray")
+    vegetable1 = make_rectangle(Point(275, 140), Point(725, 115), colour="darkgray")
+    vegetable2 = make_rectangle(Point(265, 165), Point(735, 140), colour="darkgray")
+    cheese = make_rectangle(Point(300, 180), Point(700, 165), colour="darkgray")
+    meat = make_rectangle(Point(265, 205), Point(735, 180), colour="darkgray")
 
     # Ingredient boxes
-    meatbox = Rectangle(Point(50, 260), Point(200, 580))
-    meatbox.setFill("pink")
-    meatbox.draw(win)
+    meatbox = make_rectangle(Point(50, 580), Point(200, 260), colour="pink")
+    cheesebox = make_rectangle(Point(225, 440), Point(375, 260), colour="pink")
+    vegetablebox1 = make_rectangle(Point(400, 475), Point(550, 260), colour="pink")
+    vegetablebox2 = make_rectangle(Point(575, 475), Point(725, 260), colour="pink")
+    saucebox = make_rectangle(Point(750, 570), Point(900, 260), colour="pink")
 
-    cheesebox = Rectangle(Point(225, 260), Point(375, 440))
-    cheesebox.setFill("pink")
-    cheesebox.draw(win)
-
-    vegetablebox1 = Rectangle(Point(400, 260), Point(550, 475))
-    vegetablebox1.setFill("pink")
-    vegetablebox1.draw(win)
-    vegetablebox2 = Rectangle(Point(575, 260), Point(725, 475))
-    vegetablebox2.setFill("pink")
-    vegetablebox2.draw(win)
     meatboxtext = place_label_text(Point(125, 290), "Meat:")
     cheeseboxtext = place_label_text(Point(300, 290), "Cheese:")
     vegetablebox1text = place_label_text(Point(475, 290), "Vegetable 1:")
     vegetablebox2text = place_label_text(Point(650, 290), "Vegetable 2:")
+    sauceboxtext = place_label_text(Point(825, 290), "Sauce:")
 
     # Meat
-
     legham_button, legham, leghamtext = draw_ingredient(
         insertion_point=Point(85, 320),
-        active_radius=25,
+        active_radius=20,
         ingredient_radius=11,
         ingredient_colour="lightpink",
         lable_text="Leg Ham",
@@ -72,7 +60,6 @@ def main():
         text_size=10,
     )
 
-    # schnitzel = Oval(Point(145, 309), Point(185, 335))
     schnitzel_button, schnitzel, schnitzeltext = draw_ingredient(
         insertion_point=Point(165, 320),
         ingredient_colour="chocolate3",
@@ -81,222 +68,428 @@ def main():
 
     salami_button, salami, salamitext = draw_ingredient(
         insertion_point=Point(85, 375),
+        active_radius=20,
         ingredient_colour="firebrick1",
         lable_text="Salami",
     )
 
-    # turkey = Oval(Point(145, 360), Point(185, 385))
     turkey_button, turkey, turkeytext = draw_ingredient(
         insertion_point=Point(165, 375),
         ingredient_colour="cornsilk",
         lable_text="Turkey",
     )
 
-    tuna = Rectangle(Point(65, 420), Point(105, 440))
-    tuna.setFill("burlywood2")
-    tuna.draw(win)
-    tunatext = place_label_text(Point(85, 455), "Tuna", size=10)
+    tuna_button, tuna, tunatext = draw_ingredient(
+        insertion_point=Point(85, 430),
+        ingredient_colour="burlywood2",
+        lable_text="Tuna",
+    )
 
-    meatball = Circle(Point(165, 430), 11)
-    meatball.setFill("brown3")
-    meatball.draw(win)
-    meatballtext = place_label_text(Point(165, 456), "Meatball", size=10)
+    meatball_button, meatball, meatballtext = draw_ingredient(
+        insertion_point=Point(165, 430),
+        active_radius=20,
+        ingredient_colour="brown3",
+        lable_text="Meatball",
+    )
 
-    grilledchicken = Oval(Point(65, 470), Point(105, 495))
-    grilledchicken.setFill("bisque1")
-    grilledchicken.draw(win)
-    grilledchickentext = place_label_text(Point(90, 510), "Grilled Chicken", size=8)
+    grilledchicken_button, grilledchicken, grilledchickentext = draw_ingredient(
+        insertion_point=Point(85, 482.5),
+        active_radius=20,
+        ingredient_colour="bisque1",
+        lable_text="Grilled Chicken",
+        text_size=7,
+    )
 
-    roastbeef = Oval(Point(145, 470), Point(185, 495))
-    roastbeef.setFill("antiquewhite4")
-    roastbeef.draw(win)
-    roastbeeftext = place_label_text(Point(170, 510), "Roast Beef", size=8)
+    roastbeef_button, roastbeef, roastbeeftext = draw_ingredient(
+        insertion_point=Point(165, 482.5),
+        active_radius=20,
+        ingredient_colour="antiquewhite4",
+        lable_text="Roast Beef",
+        text_size=8,
+    )
 
-    bbqpulledpork = Rectangle(Point(65, 530), Point(105, 540))
-    bbqpulledpork.setFill("burlywood4")
-    bbqpulledpork.draw(win)
-    bbqpulledporktext = place_label_text(Point(90, 555), "BBQ Pulled Pork", size=7)
+    bbqpulledpork_button, bbqpulledpork, bbqpulledporktext = draw_ingredient(
+        insertion_point=Point(85, 535),
+        active_radius=20,
+        ingredient_colour="burlywood4",
+        lable_text="BBQ Pulled Pork",
+        text_size=6,
+    )
 
-    veggiepattie = Rectangle(Point(145, 525), Point(190, 545))
-    veggiepattie.setFill("sandybrown")
-    veggiepattie.draw(win)
-    veggiepattietext = place_label_text(Point(168, 555), "Veggie Pattie", size=7)
+    veggiepattie_button, veggiepattie, veggiepattietext = draw_ingredient(
+        insertion_point=Point(167.5, 535),
+        active_radius=20,
+        ingredient_colour="sandybrown",
+        lable_text="Veggie Pattie",
+        text_size=7,
+    )
 
     # Cheese
-    oldenglish = Polygon(Point(265, 315), Point(250, 340), Point(280, 340))
-    oldenglish.setFill("gold")
-    oldenglish.draw(win)
-    oldenglishtext = place_label_text(Point(265, 360), "Old English", size=10)
+    oldenglish_button, oldenglish, oldenglishtext = draw_ingredient(
+        insertion_point=Point(265, 331.7),
+        active_radius=20,
+        ingredient_colour="gold",
+        lable_text="Old English",
+        text_size=10,
+    )
 
-    cheddar = Polygon(Point(335, 315), Point(320, 340), Point(350, 340))
-    cheddar.setFill("oldlace")
-    cheddar.draw(win)
-    cheddartext = place_label_text(Point(335, 360), "Cheddar", size=10)
+    cheddar_button, cheddar, cheddartext = draw_ingredient(
+        insertion_point=Point(335, 331.7),
+        active_radius=20,
+        ingredient_colour="oldlace",
+        lable_text="Cheddar",
+    )
 
-    mozzarella = Rectangle(Point(250, 380), Point(280, 400))
-    mozzarella.setFill("palegoldenrod")
-    mozzarella.draw(win)
-    mozzarellatext = place_label_text(Point(265, 415), "Mozzarella", size=10)
+    mozzarella_button, mozzarella, mozzarellatext = draw_ingredient(
+        insertion_point=Point(265, 390),
+        active_radius=20,
+        ingredient_colour="palegoldenrod",
+        lable_text="Mozzarella",
+    )
 
-    swiss = Polygon(Point(335, 375), Point(320, 400), Point(350, 400))
-    swiss.setFill("lightgoldenrodyellow")
-    swiss.draw(win)
-    swisstext = place_label_text(Point(335, 415), "Swiss", size=10)
+    swiss_button, swiss, swisstext = draw_ingredient(
+        insertion_point=Point(335, 390),
+        ingredient_colour="lightgoldenrodyellow",
+        lable_text="Swiss",
+    )
 
     # First vegetable
-    lettuce1 = Rectangle(Point(410, 315), Point(450, 330))
-    lettuce1.setFill("DarkOliveGreen1")
-    lettuce1.draw(win)
-    lettuce1text = place_label_text(Point(430, 345), "Lettuce", size=10)
+    lettuce1_button, lettuce1, lettuce1text = draw_ingredient(
+        insertion_point=Point(430, 322.5),
+        ingredient_colour="DarkOliveGreen1",
+        lable_text="Lettuce1",
+    )
 
-    tomato1 = Circle(Point(510, 325), 11)
-    tomato1.setFill("tomato")
-    tomato1.draw(win)
-    tomato1text = place_label_text(Point(510, 346), "Tomato", size=10)
+    tomato1_button, tomato1, tomato1text = draw_ingredient(
+        insertion_point=Point(510, 325),
+        ingredient_colour="tomato",
+        lable_text="Tomato1",
+    )
 
-    onion1 = Circle(Point(430, 375), 11)
-    onion1.setFill("plum1")
-    onion1.draw(win)
-    onion1text = place_label_text(Point(430, 395), "Onion", size=10)
+    onion1_button, onion1, onion1text = draw_ingredient(
+        insertion_point=Point(430, 375),
+        ingredient_colour="plum1",
+        lable_text="Onion1",
+    )
 
-    carrot1 = Rectangle(Point(490, 365), Point(535, 380))
-    carrot1.setFill("orange")
-    carrot1.draw(win)
-    carrot1text = place_label_text(Point(510, 395), "Carrot", size=10)
+    carrot1_button, carrot1, carrot1text = draw_ingredient(
+        insertion_point=Point(512.5, 372.5),
+        active_radius=17,
+        ingredient_colour="orange",
+        lable_text="Carrot1",
+    )
 
-    spinach1 = Oval(Point(415, 415), Point(450, 440))
-    spinach1.setFill("darkgreen")
-    spinach1.draw(win)
-    spinach1text = place_label_text(Point(430, 450), "Spinach", size=10)
+    spinach1_button, spinach1, spinach1text = draw_ingredient(
+        insertion_point=Point(427.5, 432.5),
+        active_radius=20,
+        ingredient_colour="darkgreen",
+        lable_text="Spinach1",
+        text_size=8,
+    )
 
-    olive1 = Circle(Point(510, 429), 9)
-    olive1.setFill("grey13")
-    olive1.draw(win)
-    olive1text = place_label_text(Point(510, 450), "Olive", size=10)
+    olive1_button, olive1, olive1text = draw_ingredient(
+        insertion_point=Point(510, 429),
+        ingredient_radius=9,
+        ingredient_colour="grey13",
+        lable_text="Olive1",
+    )
 
     # Second Vegetable
-    lettuce2 = Rectangle(Point(585, 315), Point(625, 330))
-    lettuce2.setFill("DarkOliveGreen1")
-    lettuce2.draw(win)
-    lettuce2text = place_label_text(Point(605, 345), "Lettuce", size=10)
+    lettuce2_button, lettuce2, lettuce2text = draw_ingredient(
+        insertion_point=Point(605, 322.5),
+        ingredient_colour="DarkOliveGreen1",
+        lable_text="Lettuce2",
+    )
 
-    tomato2 = Circle(Point(685, 325), 11)
-    tomato2.setFill("tomato")
-    tomato2.draw(win)
-    tomato2text = place_label_text(Point(685, 345), "Tomato", size=10)
-    onion2 = Circle(Point(605, 375), 11)
-    onion2.setFill("plum1")
-    onion2.draw(win)
-    onion2text = place_label_text(Point(605, 395), "Onion", size=10)
-    carrot2 = Rectangle(Point(665, 365), Point(710, 380))
-    carrot2.setFill("orange")
-    carrot2.draw(win)
-    carrot2text = place_label_text(Point(685, 395), "Carrot", size=10)
-    spinach2 = Oval(Point(590, 415), Point(625, 440))
-    spinach2.setFill("darkgreen")
-    spinach2.draw(win)
-    spinach2text = place_label_text(Point(605, 450), "Spinach", size=10)
-    olive2 = Circle(Point(685, 429), 9)
-    olive2.setFill("grey13")
-    olive2.draw(win)
-    olive2text = place_label_text(Point(685, 450), "Olive", size=10)
+    tomato2_button, tomato2, tomato2text = draw_ingredient(
+        insertion_point=Point(685, 325),
+        ingredient_colour="tomato",
+        lable_text="Tomato2",
+    )
+
+    onion2_button, onion2, onion2text = draw_ingredient(
+        insertion_point=Point(605, 375), ingredient_colour="plum1", lable_text="Onion2"
+    )
+
+    carrot2_button, carrot2, carrot2text = draw_ingredient(
+        insertion_point=Point(687.5, 372.5),
+        active_radius=17,
+        ingredient_colour="orange",
+        lable_text="Carrot2",
+    )
+
+    spinach2_button, spinach2, spinach2text = draw_ingredient(
+        insertion_point=Point(607.5, 427.5),
+        active_radius=17,
+        ingredient_colour="darkgreen",
+        lable_text="Spinach2",
+    )
+
+    olive2_button, olive2, olive2text = draw_ingredient(
+        insertion_point=Point(685, 429),
+        ingredient_radius=9,
+        ingredient_colour="grey13",
+        lable_text="Olive2",
+    )
+
     # Sauce
-    saucebox = Rectangle(Point(750, 260), Point(900, 570))
-    saucebox.setFill("pink")
-    saucebox.draw(win)
-    sauceboxtext = place_label_text(Point(825, 290), "Sauce:")
-    ketchup, ketchup_text = draw_sauce_menu_item(
-        insertion_pt=Point(785, 325), size=11, colour="orangered", label_text="Ketchup"
+
+    ketchup_button, ketchup, ketchuptext = draw_ingredient(
+        insertion_point=Point(785, 325),
+        ingredient_colour="orangered",
+        lable_text="Ketchup",
     )
-    mayo, mayo_text = draw_sauce_menu_item(
-        insertion_pt=Point(865, 325), size=11, colour="cornsilk", label_text="Mayo"
+
+    mayo_button, mayo, mayotext = draw_ingredient(
+        insertion_point=Point(865, 325), ingredient_colour="cornsilk", lable_text="Mayo"
     )
-    # This ^^^ can be replaced by just this vvv
-    # mayo = Circle(Point(865, 325), 12)
-    # mayo.setFill("cornsilk")
-    # mayo.draw(win)
-    # mayotext = place_label_text(Point(865, 345), "Mayo", size=10)
-    chipotle = Circle(Point(785, 375), 12)
-    chipotle.setFill("sandybrown")
-    chipotle.draw(win)
-    chipotletext = place_label_text(Point(785, 395), "Chipotle", size=10)
 
-    bbq = Circle(Point(865, 374), 12)
-    bbq.setFill("orangered4")
-    bbq.draw(win)
-    bbqtext = place_label_text(Point(865, 395), "BBQ", size=9)
+    chipotle_button, chipotle, chipotletext = draw_ingredient(
+        active_radius=20,
+        insertion_point=Point(785, 375),
+        ingredient_colour="sandybrown",
+        lable_text="Chipotle",
+    )
 
-    sweetchilli = Circle(Point(785, 425), 12)
-    sweetchilli.setFill("orangered3")
-    sweetchilli.draw(win)
-    sweetchillitext = place_label_text(Point(785, 445), "Sweet Chilli", size=9)
+    bbq_button, bbq, bbqtext = draw_ingredient(
+        active_radius=17,
+        insertion_point=Point(865, 374),
+        ingredient_colour="orangered4",
+        lable_text="BBQ",
+    )
 
-    ranch = Circle(Point(865, 425), 12)
-    ranch.setFill("ghostwhite")
-    ranch.draw(win)
-    ranchtext = place_label_text(Point(865, 445), "Ranch", size=9)
+    sweetchilli_button, sweetchilli, sweetchillitext = draw_ingredient(
+        active_radius=17,
+        insertion_point=Point(785, 425),
+        ingredient_colour="orangered3",
+        lable_text="Sweet Chilli",
+        text_size=8,
+    )
 
-    honeymustard = Circle(Point(785, 475), 12)
-    honeymustard.setFill("gold2")
-    honeymustard.draw(win)
-    honeymustardtext = place_label_text(Point(790, 495), "Honey Mustard", size=8)
+    ranch_button, ranch, ranchtext = draw_ingredient(
+        active_radius=17,
+        insertion_point=Point(865, 425),
+        ingredient_colour="ghostwhite",
+        lable_text="Ranch",
+    )
 
-    aioli = Circle(Point(865, 475), 12)
-    aioli.setFill("wheat1")
-    aioli.draw(win)
-    aiolitext = place_label_text(Point(865, 495), "Aioli", size=9)
-    hotsauce = Circle(Point(830, 530), 12)
-    hotsauce.setFill("orangered2")
-    hotsauce.draw(win)
-    hotsaucetext = place_label_text(Point(830, 555), "Hot Sauce", size=9)
+    honeymustard_button, honeymustard, honeymustardtext = draw_ingredient(
+        insertion_point=Point(785, 475),
+        active_radius=20,
+        ingredient_colour="gold2",
+        lable_text="Honey Mustard",
+        text_size=7,
+    )
+
+    aioli_button, aioli, aiolitext = draw_ingredient(
+        insertion_point=Point(865, 475),
+        active_radius=20,
+        ingredient_colour="wheat1",
+        lable_text="Aioli",
+    )
+
+    hotsauce_button, hotsauce, hotsaucetext = draw_ingredient(
+        insertion_point=Point(830, 530),
+        active_radius=20,
+        ingredient_colour="orangered2",
+        lable_text="Hot Sauce",
+        text_size=8,
+    )
+
     # Information
-    helpbox = Rectangle(Point(800, 100), Point(870, 150))
-    helpbox.setFill("orange2")
-    helpbox.draw(win)
-    helptext = Text(Point(835, 125), "HELP")
-    helptext.setSize(17)
-    helptext.setStyle("bold")
-    helptext.setTextColor("teal")
-    helptext.draw(win)
+    helpbox = make_rectangle(Point(800, 150), Point(870, 100), colour="orange2")
+    helptext = place_label_text(Point(835, 125), "HELP", size=17)
     # Toasted
-    toastedtext = Text(Point(90, 125), "Toasted?")
-    toastedtext.setSize(17)
-    toastedtext.setStyle("bold")
-    toastedtext.setTextColor("teal")
-    toastedtext.draw(win)
+    toastedtext = place_label_text(Point(90, 125), "Toasted?", size=17)
 
-    yesbox = Rectangle(Point(20, 150), Point(80, 200))
-    yesbox.setFill("lawngreen")
-    yesbox.draw(win)
-    yestext = Text(Point(50, 175), "YES")
-    yestext.setSize(17)
-    yestext.setStyle("bold")
-    yestext.setTextColor("teal")
-    yestext.draw(win)
+    yes_button, yes, yestext = draw_ingredient(
+        ingredient_colour="sandybrown",
+        insertion_point=Point(50, 175),
+        active_radius=30,
+        ingredient_radius=30,
+        lable_text="YES",
+        text_size=15,
+        label_text_offset=0,
+    )
 
-    nobox = Rectangle(Point(100, 150), Point(160, 200))
-    nobox.setFill("red")
-    nobox.draw(win)
-    notext = Text(Point(130, 175), "NO")
-    notext.setSize(17)
-    notext.setStyle("bold")
-    notext.setTextColor("teal")
-    notext.draw(win)
+    no_button, no, notext = draw_ingredient(
+        ingredient_colour="navajowhite",
+        insertion_point=Point(130, 175),
+        active_radius=30,
+        ingredient_radius=30,
+        lable_text="NO",
+        text_size=15,
+        label_text_offset=0,
+    )
 
     # Reset
-    resetbox = Rectangle(Point(790, 175), Point(880, 225))
-    resetbox.setFill("magenta")
-    resetbox.draw(win)
-    resettext = Text(Point(835, 200), "RESET")
-    resettext.setSize(17)
-    resettext.setStyle("bold")
-    resettext.setTextColor("teal")
-    resettext.draw(win)
-    resetbox.getCenter()
+    resetbox_button, resetbox, resetboxtext = draw_ingredient(
+        ingredient_colour="darkgray",
+        active_radius=30,
+        ingredient_radius=30,
+        insertion_point=Point(835, 200),
+        lable_text="RESET",
+        label_text_offset=0,
+    )
+
+    clicksbox = make_rectangle(Point(290, 580), Point(580, 520), colour="Light green")
+    clicksnumber = place_label_text(
+        Point(520, 551), CLICK_COUNTER, size=40, textcolor="black", style="normal"
+    )
+    clickstext = place_label_text(
+        Point(400, 550), "Clicks:", size=40, textcolor="black", style="normal"
+    )
 
     while True:
         click_point = win.getMouse()
         print(click_point)
+        CLICK_COUNTER += 1
+        clicksnumber.setText(CLICK_COUNTER)
+
+        x = click_point.getX()
+        y = click_point.getY()
+
+        if (x >= 800 and x <= 870) and (y <= 150 and y >= 100):
+            title.undraw()
+            bread1.undraw()
+            bread2.undraw()
+            sauce.undraw()
+            vegetable1.undraw()
+            vegetable2.undraw()
+            cheese.undraw()
+            meat.undraw()
+            meatboxtext.undraw()
+            cheeseboxtext.undraw()
+            vegetablebox1text.undraw()
+            vegetablebox2text.undraw()
+            sauceboxtext.undraw()
+            legham_button.undraw()
+            legham.undraw()
+            leghamtext.undraw()
+            schnitzel_button.undraw()
+            schnitzel.undraw()
+            schnitzeltext.undraw()
+            salami_button.undraw()
+            salami.undraw()
+            salamitext.undraw()
+            turkey_button.undraw()
+            turkey.undraw()
+            turkeytext.undraw()
+            tuna_button.undraw()
+            tuna.undraw()
+            tunatext.undraw()
+            meatball_button.undraw()
+            meatball.undraw()
+            meatballtext.undraw()
+            grilledchicken_button.undraw()
+            grilledchicken.undraw()
+            grilledchickentext.undraw()
+            roastbeef_button.undraw()
+            roastbeef.undraw()
+            roastbeeftext.undraw()
+            bbqpulledpork_button.undraw()
+            bbqpulledpork.undraw()
+            bbqpulledporktext.undraw()
+            veggiepattie_button.undraw()
+            veggiepattie.undraw()
+            veggiepattietext.undraw()
+            meatbox.undraw()
+            oldenglish_button.undraw()
+            oldenglish.undraw()
+            oldenglishtext.undraw()
+            cheddar_button.undraw()
+            cheddar.undraw()
+            cheddartext.undraw()
+            mozzarella_button.undraw()
+            mozzarella.undraw()
+            mozzarellatext.undraw()
+            swiss_button.undraw()
+            swiss.undraw()
+            swisstext.undraw()
+            cheesebox.undraw()
+            lettuce1_button.undraw()
+            lettuce1.undraw()
+            lettuce1text.undraw()
+            tomato1_button.undraw()
+            tomato1.undraw()
+            tomato1text.undraw()
+            onion1_button.undraw()
+            onion1.undraw()
+            onion1text.undraw()
+            carrot1_button.undraw()
+            carrot1.undraw()
+            carrot1text.undraw()
+            spinach1_button.undraw()
+            spinach1.undraw()
+            spinach1text.undraw()
+            olive1_button.undraw()
+            olive1.undraw()
+            olive1text.undraw()
+            vegetablebox1.undraw()
+            lettuce2_button.undraw()
+            lettuce2.undraw()
+            lettuce2text.undraw()
+            tomato2_button.undraw()
+            tomato2.undraw()
+            tomato2text.undraw()
+            onion2_button.undraw()
+            onion2.undraw()
+            onion2text.undraw()
+            carrot2_button.undraw()
+            carrot2.undraw()
+            carrot2text.undraw()
+            spinach2_button.undraw()
+            spinach2.undraw()
+            spinach2text.undraw()
+            olive2_button.undraw()
+            olive2.undraw()
+            olive2text.undraw()
+            vegetablebox2.undraw()
+            ketchup_button.undraw()
+            ketchup.undraw()
+            ketchuptext.undraw()
+            mayo_button.undraw()
+            mayo.undraw()
+            mayotext.undraw()
+            chipotle_button.undraw()
+            chipotle.undraw()
+            chipotletext.undraw()
+            bbq_button.undraw()
+            bbq.undraw()
+            bbqtext.undraw()
+            sweetchilli_button.undraw()
+            sweetchilli.undraw()
+            sweetchillitext.undraw()
+            ranch_button.undraw()
+            ranch.undraw()
+            ranchtext.undraw()
+            honeymustard_button.undraw()
+            honeymustard.undraw()
+            honeymustardtext.undraw()
+            aioli_button.undraw()
+            aioli.undraw()
+            aiolitext.undraw()
+            hotsauce_button.undraw()
+            hotsauce.undraw()
+            hotsaucetext.undraw()
+            saucebox.undraw()
+            helpbox.undraw()
+            helptext.undraw()
+            toastedtext.undraw()
+            yes_button.undraw()
+            yes.undraw()
+            yestext.undraw()
+            no_button.undraw()
+            no.undraw()
+            notext.undraw()
+            resetbox_button.undraw()
+            resetbox.undraw()
+            resetboxtext.undraw()
+            clicksbox.undraw()
+            clicksnumber.undraw()
+            clickstext.undraw()
+            helppage(win)
+
         for button in BUTTON_LIST:
             if (
                 distance(button["insertion_point"], click_point)
@@ -304,169 +497,69 @@ def main():
             ):
                 print(f"Clicked on {button['ingredient']}")
                 ingredient = button["ingredient"]
-                if ingredient in ["Salami", "Schnitzel", "Leg Ham", "Turkey"]:
+                if ingredient in [
+                    "Salami",
+                    "Schnitzel",
+                    "Leg Ham",
+                    "Turkey",
+                    "Meatball",
+                    "Tuna",
+                    "Grilled Chicken",
+                    "Roast Beef",
+                    "BBQ Pulled Pork",
+                    "Veggie Pattie",
+                ]:
                     meat.setFill(button["ingredient_colour"])
-
-    # if 800 < click_point.getX() < 870 and 100 < click_point.getY() < 150:
-    #     help1 = GraphWin("Help", 950, 600)
-    #     help1.setBackground("powderblue")
-    # # Title
-    # helptitle = Text(Point(350, 50), "Help Page")
-    # helptitle.setSize(70)
-    # helptitle.setStyle("bold")
-    # helptitle.setTextColor("pink")
-    # helptitle.draw(help1)
-    # # Help Boxes
-    # whatisbox = Rectangle(Point(50, 150), Point(250, 360))
-    # whatisbox.setFill("pink")
-    # whatisbox.draw(help1)
-    # whatisboxtext = Text(Point(150, 170), "What is this?")
-    # whatisboxtext.setSize(20)
-    # whatisboxtext.setStyle("bold")
-    # whatisboxtext.setTextColor("teal")
-    # whatisboxtext.draw(help1)
-    # howtobox = Rectangle(Point(275, 150), Point(600, 360))
-    # howtobox.setFill("pink")
-    # howtobox.draw(help1)
-    # howtoboxtext = Text(Point(440, 170), "How do you play this?")
-    # howtoboxtext.setSize(20)
-    # howtoboxtext.setStyle("bold")
-    # howtoboxtext.setTextColor("teal")
-    # howtoboxtext.draw(help1)
-    # isnttherebox = Rectangle(Point(50, 375), Point(375, 525))
-    # isnttherebox.setFill("pink")
-    # isnttherebox.draw(help1)
-    # isntthereboxtext = Text(Point(215, 395), "The ingredient I want isnt there!")
-    # isntthereboxtext.setSize(15)
-    # isntthereboxtext.setStyle("bold")
-    # isntthereboxtext.setTextColor("teal")
-    # isntthereboxtext.draw(help1)
-    # # What is this game Information text
-    # whatistext1 = Text(Point(150, 200), "This is a game where")
-    # whatistext1.setSize(13)
-    # whatistext1.setTextColor("teal")
-    # whatistext1.draw(help1)
-    # whatistext2 = Text(Point(150, 220), "you can create your")
-    # whatistext2.setSize(13)
-    # whatistext2.setTextColor("teal")
-    # whatistext2.draw(help1)
-    # whatistext3 = Text(Point(150, 240), "own subway sandwich!")
-    # whatistext3.setSize(13)
-    # whatistext3.setTextColor("teal")
-    # whatistext3.draw(help1)
-    # whatistext4 = Text(Point(150, 260), "You can choose your")
-    # whatistext4.setSize(13)
-    # whatistext4.setTextColor("teal")
-    # whatistext4.draw(help1)
-    # whatistext5 = Text(Point(150, 280), "own ingredients that")
-    # whatistext5.setSize(13)
-    # whatistext5.setTextColor("teal")
-    # whatistext5.draw(help1)
-    # whatistext6 = Text(Point(150, 300), "you want to be")
-    # whatistext6.setSize(13)
-    # whatistext6.setTextColor("teal")
-    # whatistext6.draw(help1)
-    # whatistext7 = Text(Point(150, 320), "on your sandwich")
-    # whatistext7.setSize(13)
-    # whatistext7.setTextColor("teal")
-    # whatistext7.draw(help1)
-    # # How to play Information text
-    # howtotext1 = Text(Point(440, 200), "To use the simulation, you need to click on")
-    # howtotext1.setSize(13)
-    # howtotext1.setTextColor("teal")
-    # howtotext1.draw(help1)
-    # howtotext2 = Text(Point(440, 220), "the ingredients that you would like on your")
-    # howtotext2.setSize(13)
-    # howtotext2.setTextColor("teal")
-    # howtotext2.draw(help1)
-    # howtotext3 = Text(Point(440, 240), "sandwich similar to the diagram on the right.")
-    # howtotext3.setSize(13)
-    # howtotext3.setTextColor("teal")
-    # howtotext3.draw(help1)
-    # howtotext4 = Text(Point(440, 260), "If you would like your sandwich to be")
-    # howtotext4.setSize(13)
-    # howtotext4.setTextColor("teal")
-    # howtotext4.draw(help1)
-    # howtotext5 = Text(Point(440, 280), "toasted, simply click the 'toasted' button.")
-    # howtotext5.setSize(13)
-    # howtotext5.setTextColor("teal")
-    # howtotext5.draw(help1)
-    # howtotext6 = Text(Point(440, 300), "If you made a mistake in your preference,")
-    # howtotext6.setSize(13)
-    # howtotext6.setTextColor("teal")
-    # howtotext6.draw(help1)
-    # howtotext7 = Text(Point(440, 320), "you can always click the 'reset' button")
-    # howtotext7.setSize(13)
-    # howtotext7.setTextColor("teal")
-    # howtotext7.draw(help1)
-    # howtotext7 = Text(Point(440, 340), "to reset your sandwich to the original.")
-    # howtotext7.setSize(13)
-    # howtotext7.setTextColor("teal")
-    # howtotext7.draw(help1)
-    # # My ingredient isnt there Information text
-    # isnttheretext1 = Text(Point(215, 425), "This simulation does not have every single")
-    # isnttheretext1.setSize(13)
-    # isnttheretext1.setTextColor("teal")
-    # isnttheretext1.draw(help1)
-    # isnttheretext2 = Text(Point(215, 445), "ingredient that is offered at subway,")
-    # isnttheretext2.setSize(13)
-    # isnttheretext2.setTextColor("teal")
-    # isnttheretext2.draw(help1)
-    # isnttheretext3 = Text(Point(215, 465), "but it contains the most popular")
-    # isnttheretext3.setSize(13)
-    # isnttheretext3.setTextColor("teal")
-    # isnttheretext3.draw(help1)
-    # isnttheretext4 = Text(Point(215, 485), "ingredients that are offered at subway.")
-    # isnttheretext4.setSize(13)
-    # isnttheretext4.setTextColor("teal")
-    # isnttheretext4.draw(help1)
-    # isnttheretext5 = Text(Point(215, 505), "We are very sorry in advance.")
-    # isnttheretext5.setSize(13)
-    # isnttheretext5.setTextColor("teal")
-    # isnttheretext5.draw(help1)
-    # # Image
-    # referenceimage = Image(Point(800, 250), "Imageforinfo.png")
-    # referenceimage.draw(help1)
-    # # Arrow
-    # arrowline = Line(Point(600, 240), Point(675, 240))
-    # arrowline.setWidth(5)
-    # arrowline.draw(help1)
-    # arrowtriangle = Polygon(Point(675, 220), Point(675, 260), Point(715, 240))
-    # arrowtriangle.setFill("black")
-    # arrowtriangle.draw(help1)
-    # # Cursor
-    # cursorrectangle = Polygon(
-    #     Point(745, 365), Point(753, 365), Point(755, 375), Point(746, 375)
-    # )
-    # cursorrectangle.setFill("white")
-    # cursorrectangle.draw(help1)
-
-    # cursortriangle = Polygon(Point(740, 335), Point(735, 365), Point(760, 365))
-    # cursortriangle.setFill("white")
-    # cursortriangle.draw(help1)
-    # # Tip Text
-    # tiptext1 = Text(Point(550, 400), "TIP:")
-    # tiptext1.setSize(30)
-    # tiptext1.setTextColor("Magenta")
-    # tiptext1.draw(help1)
-    # tiptext2 = Text(Point(550, 450), "CLICK IN THE")
-    # tiptext2.setSize(25)
-    # tiptext2.setTextColor("Magenta")
-    # tiptext2.draw(help1)
-    # tiptext3 = Text(Point(550, 500), "CENTER OF THE")
-    # tiptext3.setSize(25)
-    # tiptext3.setTextColor("Magenta")
-    # tiptext3.draw(help1)
-    # tiptext4 = Text(Point(550, 550), "INGREDIENTS")
-    # tiptext4.setSize(25)
-    # tiptext4.setTextColor("Magenta")
-    # tiptext4.draw(help1)
+                elif ingredient in ["Old English", "Cheddar", "Mozzarella", "Swiss"]:
+                    cheese.setFill(button["ingredient_colour"])
+                elif ingredient in [
+                    "Lettuce1",
+                    "Tomato1",
+                    "Onion1",
+                    "Carrot1",
+                    "Spinach1",
+                    "Olive1",
+                ]:
+                    vegetable2.setFill(button["ingredient_colour"])
+                elif ingredient in [
+                    "Lettuce2",
+                    "Tomato2",
+                    "Onion2",
+                    "Carrot2",
+                    "Spinach2",
+                    "Olive2",
+                ]:
+                    vegetable1.setFill(button["ingredient_colour"])
+                elif ingredient in [
+                    "Ketchup",
+                    "Mayo",
+                    "Chipotle",
+                    "BBQ",
+                    "Sweet Chilli",
+                    "Ranch",
+                    "Honey Mustard",
+                    "Aioli",
+                    "Hot Sauce",
+                ]:
+                    sauce.setFill(button["ingredient_colour"])
+                elif ingredient in ["RESET"]:
+                    meat.setFill(button["ingredient_colour"])
+                    cheese.setFill(button["ingredient_colour"])
+                    vegetable2.setFill(button["ingredient_colour"])
+                    vegetable1.setFill(button["ingredient_colour"])
+                    sauce.setFill(button["ingredient_colour"])
+                elif ingredient in ["YES"]:
+                    bread1.setFill(button["ingredient_colour"])
+                    bread2.setFill(button["ingredient_colour"])
+                elif ingredient in ["NO"]:
+                    bread1.setFill(button["ingredient_colour"])
+                    bread2.setFill(button["ingredient_colour"])
 
 
 def draw_ingredient(
     insertion_point=Point(85, 320),
-    active_radius=25,
     ingredient_radius=11,
+    active_radius=20,
     ingredient_colour="lightpink",
     lable_text="Leg Ham",
     label_text_offset=25,
@@ -475,7 +568,7 @@ def draw_ingredient(
     """Draws an ingredient button, ingredient circle and label text on the screen."""
     button = Circle(insertion_point, active_radius)
     button.setFill("pink")
-    button.setOutline("lightpink")
+    button.setOutline("pink")
     button.draw(win)
     BUTTON_LIST.append(
         {
@@ -485,6 +578,7 @@ def draw_ingredient(
             "ingredient_colour": ingredient_colour,
         }
     )
+
     ingredient_graphic = Circle(insertion_point, ingredient_radius)
     ingredient_graphic.setFill(ingredient_colour)
     ingredient_graphic.draw(win)
@@ -496,28 +590,16 @@ def draw_ingredient(
     return button, ingredient_graphic, label_text
 
 
-def draw_sauce_menu_item(
-    insertion_pt=Point(785, 325), size=11, colour="orangered", label_text="Ketchup"
-):
-    spot = Circle(insertion_pt, size)
-    spot.setFill(colour)
-    spot.draw(win)
-    label_text = place_label_text(
-        Point(insertion_pt.x, insertion_pt.y + 20), label_text, size=10
-    )
-    return spot, label_text
-
-
-def place_label_text(insertion_pt, label, size=15):
+def place_label_text(insertion_pt, label, size=15, textcolor="teal", style="bold"):
     label_text = Text(insertion_pt, label)
     label_text.setSize(size)
-    label_text.setStyle("bold")
-    label_text.setTextColor("teal")
+    label_text.setStyle(style)
+    label_text.setTextColor(textcolor)
     label_text.draw(win)
     return label_text
 
 
-def make_bread(bottom_left_pt, top_right_pt, colour="navajowhite"):
+def make_rectangle(bottom_left_pt, top_right_pt, colour="navajowhite"):
     bread = Rectangle(bottom_left_pt, top_right_pt)
     bread.setFill(colour)
     bread.draw(win)
@@ -526,6 +608,195 @@ def make_bread(bottom_left_pt, top_right_pt, colour="navajowhite"):
 
 def distance(p1, p2):
     return ((p1.getX() - p2.getX()) ** 2 + (p1.getY() - p2.getY()) ** 2) ** 0.5
+
+
+def helppage(win):
+    win.setBackground("lightcoral")
+    helptitle = place_label_text(Point(375, 75), "Help Page", size=80, textcolor="pink")
+    # Help Boxes
+    whatisbox = make_rectangle(Point(50, 150), Point(250, 360), colour="pink")
+    whatisboxtext = place_label_text(Point(150, 170), "What is this?", size=20)
+    howtobox = make_rectangle(Point(275, 150), Point(600, 360), colour="pink")
+    howtoboxtext = place_label_text(
+        Point(440, 170), "How do you play this?", textcolor="teal"
+    )
+    isnttherebox = make_rectangle(Point(50, 375), Point(375, 525), colour="pink")
+    isntthereboxtext = place_label_text(
+        Point(215, 395), "The ingredient I wans isnt there!"
+    )
+    # What is this game Information text
+    whatistext1 = place_label_text(
+        Point(150, 200), "This is a game where", size=13, style="normal"
+    )
+    whatistext2 = place_label_text(
+        Point(150, 220), "you can create your", size=13, style="normal"
+    )
+    whatistext3 = place_label_text(
+        Point(150, 240), "own subway sandwich!", size=13, style="normal"
+    )
+    whatistext4 = place_label_text(
+        Point(150, 260), "You can choose your", size=13, style="normal"
+    )
+    whatistext5 = place_label_text(
+        Point(150, 280), "own ingredients that", size=13, style="normal"
+    )
+    whatistext6 = place_label_text(
+        Point(150, 300), "you want to be", size=13, style="normal"
+    )
+    whatistext7 = place_label_text(
+        Point(150, 320), "on your sandwich", size=13, style="normal"
+    )
+    # How to play Information text
+    howtotext1 = place_label_text(
+        Point(440, 200),
+        "To use the simulation, you need to click on",
+        size=13,
+        style="normal",
+    )
+    howtotext2 = place_label_text(
+        Point(440, 220),
+        "the ingredients that you would like on",
+        size=13,
+        style="normal",
+    )
+    howtotext3 = place_label_text(
+        Point(440, 240),
+        "sandwich similar to the diagram on the right.",
+        size=13,
+        style="normal",
+    )
+    howtotext4 = Text(Point(440, 260), "If you would like your sandwich to be")
+    howtotext4.setSize(13)
+    howtotext4.setTextColor("teal")
+    howtotext4.draw(win)
+    howtotext5 = Text(Point(440, 280), "toasted, simply click the 'toasted' button.")
+    howtotext5.setSize(13)
+    howtotext5.setTextColor("teal")
+    howtotext5.draw(win)
+    howtotext6 = Text(Point(440, 300), "If you made a mistake in your preference,")
+    howtotext6.setSize(13)
+    howtotext6.setTextColor("teal")
+    howtotext6.draw(win)
+    howtotext7 = Text(Point(440, 320), "you can always click the 'reset' button")
+    howtotext7.setSize(13)
+    howtotext7.setTextColor("teal")
+    howtotext7.draw(win)
+    howtotext8 = Text(Point(440, 340), "to reset your sandwich to the original.")
+    howtotext8.setSize(13)
+    howtotext8.setTextColor("teal")
+    howtotext8.draw(win)
+    # My ingredient isnt there Information text
+    isnttheretext1 = Text(Point(215, 425), "This simulation does not have every single")
+    isnttheretext1.setSize(13)
+    isnttheretext1.setTextColor("teal")
+    isnttheretext1.draw(win)
+    isnttheretext2 = Text(Point(215, 445), "ingredient that is offered at subway,")
+    isnttheretext2.setSize(13)
+    isnttheretext2.setTextColor("teal")
+    isnttheretext2.draw(win)
+    isnttheretext3 = Text(Point(215, 465), "but it contains the most popular")
+    isnttheretext3.setSize(13)
+    isnttheretext3.setTextColor("teal")
+    isnttheretext3.draw(win)
+    isnttheretext4 = Text(Point(215, 485), "ingredients that are offered at subway.")
+    isnttheretext4.setSize(13)
+    isnttheretext4.setTextColor("teal")
+    isnttheretext4.draw(win)
+    isnttheretext5 = Text(Point(215, 505), "We are very sorry in advance.")
+    isnttheretext5.setSize(13)
+    isnttheretext5.setTextColor("teal")
+    isnttheretext5.draw(win)
+    # Image
+    try:
+        referenceimage = Image(Point(800, 250), "Imageforinfo.png")
+        referenceimage.draw(win)
+    except:
+        print("Couldn't find the image")
+    # Arrow
+    arrowline = Line(Point(600, 240), Point(675, 240))
+    arrowline.setWidth(5)
+    arrowline.draw(win)
+    arrowtriangle = Polygon(Point(675, 220), Point(675, 260), Point(715, 240))
+    arrowtriangle.setFill("black")
+    arrowtriangle.draw(win)
+    # Cursor
+    cursorrectangle = Polygon(
+        Point(745, 365), Point(753, 365), Point(755, 375), Point(746, 375)
+    )
+    cursorrectangle.setFill("white")
+    cursorrectangle.draw(win)
+    cursortriangle = Polygon(Point(740, 335), Point(735, 365), Point(760, 365))
+    cursortriangle.setFill("white")
+    cursortriangle.draw(win)
+    # Tip Text
+    tiptext1 = Text(Point(550, 400), "TIP:")
+    tiptext1.setSize(30)
+    tiptext1.setTextColor("Magenta")
+    tiptext1.draw(win)
+    tiptext2 = Text(Point(550, 450), "CLICK IN THE")
+    tiptext2.setSize(25)
+    tiptext2.setTextColor("Magenta")
+    tiptext2.draw(win)
+    tiptext3 = Text(Point(550, 500), "CENTER OF THE")
+    tiptext3.setSize(25)
+    tiptext3.setTextColor("Magenta")
+    tiptext3.draw(win)
+    tiptext4 = Text(Point(550, 550), "INGREDIENTS")
+    tiptext4.setSize(25)
+    tiptext4.setTextColor("Magenta")
+    tiptext4.draw(win)
+    # Back button
+    backbutton = make_rectangle(Point(20, 20), Point(100, 80), colour="orange2")
+    backtext = place_label_text(Point(60, 50), "BACK", size=17)
+
+    while True:
+        click_point = win.getMouse()
+        x = click_point.getX()
+        y = click_point.getY()
+        if (x >= 20 and x <= 100) and (y >= 20 and y <= 80):
+            helptitle.undraw()
+            whatisbox.undraw()
+            whatisboxtext.undraw()
+            howtobox.undraw()
+            howtoboxtext.undraw()
+            isnttherebox.undraw()
+            isntthereboxtext.undraw()
+            whatistext1.undraw()
+            whatistext2.undraw()
+            whatistext3.undraw()
+            whatistext4.undraw()
+            whatistext5.undraw()
+            whatistext6.undraw()
+            whatistext7.undraw()
+            howtotext1.undraw()
+            howtotext2.undraw()
+            howtotext3.undraw()
+            howtotext4.undraw()
+            howtotext5.undraw()
+            howtotext6.undraw()
+            howtotext7.undraw()
+            howtotext8.undraw()
+            isnttheretext1.undraw()
+            isnttheretext2.undraw()
+            isnttheretext3.undraw()
+            isnttheretext4.undraw()
+            isnttheretext5.undraw()
+            referenceimage.undraw()
+            arrowline.undraw()
+            arrowtriangle.undraw()
+            cursorrectangle.undraw()
+            cursortriangle.undraw()
+            tiptext1.undraw()
+            tiptext2.undraw()
+            tiptext3.undraw()
+            tiptext4.undraw()
+            backbutton.undraw()
+            backtext.undraw()
+            main_page(win)
+
+
+def main():
+    main_page(win)
 
 
 main()
