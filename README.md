@@ -18,8 +18,8 @@ If you want, you can download the maps, as they stand now, from here:
 
 | Full map, 1:2000 @ A3              | Zoomed map 1:2000 @ A4 or 1:1414 @ A3 |
 | ---------------------------------- | ------------------------------------- |
-| ![](docs\Gordons_map_wip@0.5x.png) | ![](docs\zoomed@0.5x.png)             |
-| [full](docs\Gordons_map_wip.pdf)   | [zoomed](docs\zoomed.pdf)             |
+| ![](docs/Gordons_map_wip@0.5x.png) | ![](docs/zoomed@0.5x.png)             |
+| [full](docs/Gordons_map_wip.pdf)   | [zoomed](docs/zoomed.pdf)             |
 
 The idea is that the full map is one side of an A3 page, and the zoomed one is the back, but you can use the zoomed on an A4 if you like. You can also print the full map on A2 if you're extra keen.
 
