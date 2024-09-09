@@ -40,6 +40,7 @@ def plot_marine_landforms(
 
     landforms_shp = os.path.normpath(
         os.path.join(
+            "SEED/",
             fn,
             shapefile_folder,
             shapefile_name,
@@ -97,6 +98,7 @@ def plot_marine_landforms(
     plt.title("Marine Landforms for Gordon's Bay")
     plt.xlabel("Longitude")
     plt.ylabel("Latitude")
+    plt.savefig("SEED/gordons_bay_landforms.png")
     plt.show()
 
     return ax
@@ -109,13 +111,15 @@ plot_marine_landforms()
 data_url = "https://datasets.seed.nsw.gov.au/dataset/aa8f268e-a23d-4d27-b046-f60c45f8349b/resource/2ef6c816-04b1-4aa7-9f06-e727b9c0cdd9/download/bathymetrymosaic_marinelidar_mbes.zip"
 
 # %%
-bathymetry = gpd.read_file("data2/BathymetryMosaic_MarineLidar_MBES/ml_mb_dem0.ovr")
+bathymetry = gpd.read_file(
+    "SEED/data2/BathymetryMosaic_MarineLidar_MBES/ml_mb_dem0.ovr"
+)
 # %%
 from osgeo import gdal
 
 # Path to the .adf file
-input_file = "data2\BathymetryMosaic_MarineLidar_MBES\ml_mb_dem0\w001000.adf"
-output_file = "data2\BathymetryMosaic_MarineLidar_MBES\ml_mb_dem0\w001000.tif"
+input_file = "SEED/data2/BathymetryMosaic_MarineLidar_MBES/ml_mb_dem0/w001000.adf"
+output_file = "SEED/data2/BathymetryMosaic_MarineLidar_MBES/ml_mb_dem0/w001000.tif"
 
 # Convert to GeoTIFF
 gdal.Translate(output_file, input_file)
