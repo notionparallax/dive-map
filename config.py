@@ -1,6 +1,9 @@
 """Configuration settings for the dive map project."""
 
 # Coordinate reference system
+from shapely import LineString, Point
+
+
 CRS = "EPSG:4326"
 
 # Plotting constants
@@ -52,6 +55,13 @@ SHORE_DEPTHS = {
     "made_up_bottom_2": -6,
     "made_up_bottom_3": -12,
 }
+
+SPEAR_FISHING_BOUNDARY_COORDS = [
+    Point(151.262863, -33.917595),
+    Point(151.263333, -33.918333),
+    Point(151.271667, -33.915833),
+]
+
 
 # File paths
 FIT_FILES_DIR = "fit"
