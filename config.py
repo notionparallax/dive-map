@@ -1,7 +1,7 @@
 """Configuration settings for the dive map project."""
 
 # Coordinate reference system
-from shapely import LineString, Point
+from shapely import Point
 
 
 CRS = "EPSG:4326"
