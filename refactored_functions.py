@@ -148,8 +148,19 @@ def add_intermediate_label(row: pd.Series, ax: plt.Axes) -> None:
     )
 
 
+def unify_point_cluster(gdf: gpd.GeoDataFrame, marker_number: int) -> Point:
+    a = gdf[gdf.canonical_marker_number == marker_number]
+    if a.shape[0] == 1:
+        p = a.geometry.iloc[0]
+    elif a.shape[0] < 1:
+        p = centroid(MultiPoint(a.geometry))
+    else:
+        raise ValueError(f"No marker found for {marker_number}")
+    return p
+
+
 def draw_shortcut_arrow(
-    all_gdf: gpd.GeoDataFrame,
+    gdf: gpd.GeoDataFrame,
     ax: plt.Axes,
     from_marker_number: int = 3,
     to_marker_number: int = 14,
@@ -161,7 +172,7 @@ def draw_shortcut_arrow(
     Draw compass bearing arrow between two markers.
 
     Args:
-        all_gdf: GeoDataFrame containing marker data
+        gdf: GeoDataFrame containing marker data
         ax: Matplotlib axes to draw on
         from_marker_number: Starting marker number
         to_marker_number: Ending marker number
@@ -170,12 +181,8 @@ def draw_shortcut_arrow(
         text_size: Font size for bearing text
     """
     # Get centroids of marker clusters
-    point_a = centroid(
-        MultiPoint(all_gdf[all_gdf.marker_number == from_marker_number].geometry)
-    )
-    point_b = centroid(
-        MultiPoint(all_gdf[all_gdf.marker_number == to_marker_number].geometry)
-    )
+    point_a = unify_point_cluster(gdf, from_marker_number)
+    point_b = unify_point_cluster(gdf, to_marker_number)
 
     # Calculate bearing angle
     dy = point_b.y - point_a.y

@@ -220,22 +220,45 @@ class ContourRenderer:
         contour_data: pd.DataFrame,
         levels: List[int],
         alpha: float = 0.5,
+        number_size: int = 5,
+        labels_only: bool = False,
+        show_labels: bool = True,
+        label_color: str = "black",
     ):
         """Plot depth contours on the given axes."""
         x, y, z = self.prep_contour_data(contour_data)
 
         norm = matplotlib.colors.Normalize(vmin=min(levels), vmax=max(levels))
         cmap = plt.get_cmap("rainbow")
+        base_colors = [cmap(norm(level)) for level in levels]
+
+        if labels_only:
+            # Make all contour line colors fully transparent but retain structure for labeling
+            transparent_colors = [
+                (*matplotlib.colors.to_rgba(c)[:3], 0.0) for c in base_colors
+            ]
+            CS = ax.contour(
+                x,
+                y,
+                z,
+                levels=levels,
+                colors=transparent_colors,
+                linewidths=0.8,
+            )
+            # Always show numbers in labels_only mode
+            ax.clabel(CS, inline=1, fontsize=number_size, colors=label_color)
+            return
 
         CS = ax.contour(
             x,
             y,
             z,
             levels=levels,
-            colors=[cmap(norm(level)) for level in levels],
+            colors=base_colors,
             alpha=alpha,
         )
-        ax.clabel(CS, inline=1, fontsize=2)
+        if show_labels:
+            ax.clabel(CS, inline=1, fontsize=number_size, colors=label_color)
 
 
 class MarkerRenderer:
@@ -279,7 +302,7 @@ class MarkerRenderer:
             ax.add_patch(circle)
 
     @staticmethod
-    def create_legend(ax: plt.Axes) -> List:
+    def create_legend(ax: plt.Axes, ncols: int = 1) -> List:
         """Create legend elements for the map."""
         legend_handles = []
 
@@ -318,5 +341,5 @@ class MarkerRenderer:
         )
         legend_handles.append(tol_circle)
 
-        ax.legend(handles=legend_handles, loc="lower left")
+        ax.legend(handles=legend_handles, loc="lower left", ncols=ncols)
         return legend_handles
