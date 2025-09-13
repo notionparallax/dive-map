@@ -247,7 +247,7 @@ class ContourRenderer:
             )
             # Always show numbers in labels_only mode
             ax.clabel(CS, inline=1, fontsize=number_size, colors=label_color)
-            return
+            return CS
 
         CS = ax.contour(
             x,
@@ -259,6 +259,7 @@ class ContourRenderer:
         )
         if show_labels:
             ax.clabel(CS, inline=1, fontsize=number_size, colors=label_color)
+        return CS
 
 
 class MarkerRenderer:
