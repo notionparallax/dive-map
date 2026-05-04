@@ -19,6 +19,7 @@ import geopandas as gpd
 import matplotlib.pyplot as plt
 import os
 import requests
+from osgeo import gdal
 
 
 def plot_marine_landforms(
